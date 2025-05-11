@@ -1,0 +1,203 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Cliente {
+  id           Int      @id @default(autoincrement())
+  nome         String
+  cpf          String   @unique
+  telefone     String
+  isAtivo      Boolean  @default(true) @map("is_ativo")
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+  criadoEm     DateTime @default(now()) @map("criado_em")
+
+  enderecos    Endereco[]
+  ordemServico OrdemServico[]
+
+  @@map("clientes")
+}
+
+model Endereco {
+  id                     Int      @id @default(autoincrement())
+  clienteId              Int      @map("cliente_id")
+  cidade                 String
+  estado                 String
+  hectare                Decimal?
+  coordenadasGeograficas String?  @map("coordenadas_geograficas")
+  kmLojaCliente          Decimal? @map("km_loja_cliente")
+  referencia             String?
+  descricao              String?
+  atualizadoEm           DateTime @map("atualizado_em")
+  criadoEm               DateTime @default(now()) @map("criado_em")
+
+  cliente Cliente @relation(fields: [clienteId], references: [id])
+
+  @@map("enderecos")
+}
+
+model Usuario {
+  id           Int      @id @default(autoincrement())
+  nome         String
+  email        String   @unique
+  telefone     String
+  roleId       Int
+  atualizadoEm DateTime @map("atualizado_em")
+  criadoEm     DateTime @default(now()) @map("criado_em")
+
+  role         Role           @relation(fields: [roleId], references: [id])
+  etapaUsuario EtapaUsuario[]
+  atribuicoes  Atribuicao[]
+
+  @@map("usuarios")
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  sigla String @unique
+
+  usuarios Usuario[]
+
+  @@map("roles")
+}
+
+model Anexo {
+  id            String   @id @default(uuid())
+  historicoOsId String   @map("historico_os_id")
+  tipoAnexoId   Int      @map("tipo_anexo_id")
+  url           String
+  descricao     String?
+  criadoEm      DateTime @default(now()) @map("criado_em")
+
+  historicoOs HistoricoOS @relation(fields: [historicoOsId], references: [id])
+  tipoAnexo   TipoAnexo   @relation(fields: [tipoAnexoId], references: [id])
+
+  @@map("anexos")
+}
+
+model Etapa {
+  id        Int    @id @default(autoincrement())
+  descricao String
+
+  etapaUsuario EtapaUsuario[]
+  historicoOs  HistoricoOS[]
+
+  @@map("etapas")
+}
+
+model EtapaUsuario {
+  etapaId   Int @map("etapa_id")
+  usuarioId Int @map("usuario_id")
+
+  etapa   Etapa   @relation(fields: [etapaId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@id([etapaId, usuarioId])
+  @@map("etapa_usuario")
+}
+
+model OrdemServico {
+  id                 String   @id @default(uuid())
+  clienteId          Int      @map("cliente_id")
+  hasAutomacao       Boolean? @map("has_automacao")
+  hasOrcamento_banco Boolean? @map("has_orcamento_banco")
+  hasProjetoPlantio  Boolean? @map("has_projeto_plantio")
+  quantidadeSetores  Int?     @map("quantidade_setores")
+  criadoEm           DateTime @default(now()) @map("criado_em")
+
+  cliente     Cliente       @relation(fields: [clienteId], references: [id])
+  assistencia Assistencia?
+  historicoOs HistoricoOS[]
+
+  @@map("ordem_servico")
+}
+
+model Assistencia {
+  ordemServicoId            String   @id @map("ordem_servico_id")
+  problema                  String?
+  tipoEnergiaId             Int?     @map("tipo_energia_id")
+  motobombaId               Int?     @map("motobomba_id")
+  polegadasValvulasRegistro Int?     @map("polegadas_valvulas_registro")
+  diametroAdutoraMestre     String?  @map("diametro_adutora_mestre")
+  observacoes               String?
+  criadoEm                  DateTime @default(now()) @map("criado_em")
+
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [id])
+  tipoEnergia  TipoEnergia? @relation(fields: [tipoEnergiaId], references: [id])
+  motobomba    Motobomba?   @relation(fields: [motobombaId], references: [id])
+
+  @@map("assistencias")
+}
+
+model HistoricoOS {
+  id             String   @id @default(uuid())
+  ordemServicoId String   @map("ordem_servico_id")
+  etapaId        Int      @map("etapa_id")
+  observacoes    String?
+  criadoEm       DateTime @default(now()) @map("criado_em")
+
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [id])
+  etapa        Etapa        @relation(fields: [etapaId], references: [id])
+  anexos       Anexo[]
+  atribuicoes  Atribuicao[]
+
+  @@map("historico_os")
+}
+
+model Atribuicao {
+  historicoOsId String @map("historico_os_id")
+  usuarioId     Int    @map("usuario_id")
+
+  historicoOs HistoricoOS @relation(fields: [historicoOsId], references: [id])
+  usuario     Usuario     @relation(fields: [usuarioId], references: [id])
+
+  @@id([historicoOsId, usuarioId])
+  @@map("atribuicoes")
+}
+
+model TipoAnexo {
+  id        Int    @id @default(autoincrement())
+  descricao String
+
+  anexos Anexo[]
+
+  @@map("tipo_anexo")
+}
+
+model TipoEnergia {
+  id        Int    @id @default(autoincrement())
+  descricao String
+
+  assistencias Assistencia[]
+
+  @@map("tipo_energia")
+}
+
+model Motobomba {
+  id                  Int      @id @default(autoincrement())
+  codigoIdentificacao String   @map("codigo_identificacao")
+  modelo              String
+  marcaId             Int      @map("marca_id")
+  cv                  String
+  isAtivo             Boolean  @default(true) @map("is_ativo")
+  criadoEm            DateTime @default(now()) @map("criado_em")
+
+  marca        Marca         @relation(fields: [marcaId], references: [id])
+  assistencias Assistencia[]
+
+  @@map("motobombas")
+}
+
+model Marca {
+  id   Int    @id @default(autoincrement())
+  nome String
+
+  motobombas Motobomba[]
+
+  @@map("marcas")
+}
