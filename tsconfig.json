@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "paths": {
+      "#config/*": ["./config/*"],
+      "#controllers/*": ["./controllers/*"],
+      "#exceptions/*": ["./exceptions/*"],
+      "#middlewares/*": ["./middlewares/*"],
+      "#models/*": ["./models/*"],
+      "#repositories/*": ["./repositories/*"],
+      "#routes/*": ["./routes/*"],
+      "#services/*": ["./services/*"],
+      "#tests/*": ["./tests/*"],
+      "#utils/*": ["./utils/*"]
+    }
+  },
+  "exclude": [
+    "src/tests"
+  ]
+}
