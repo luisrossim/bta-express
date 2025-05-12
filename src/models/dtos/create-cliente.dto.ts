@@ -1,9 +1,13 @@
 import { z } from "zod";
+import { createEnderecoSchema } from "./create-endereco.dto.js";
 
-export const createClienteDTO = z.object({
+export const createClienteSchema = z.object({
   nome: z.string().min(2),
   telefone: z.string(),
-  cpf: z.string().length(11)
+  cpf: z.string().length(11),
+  enderecos: z.object({
+    create: z.array(createEnderecoSchema)
+  }).optional()
 })
 
-export type CreateClienteDTO = z.infer<typeof createClienteDTO>
+export type CreateClienteDTO = z.infer<typeof createClienteSchema>

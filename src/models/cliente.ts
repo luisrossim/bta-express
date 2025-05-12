@@ -1,4 +1,4 @@
-import { Cliente as ClientePrisma, Prisma } from "generated/prisma/index.js";
+import { Cliente as ClientePrisma, Prisma } from "@prisma/client";
 
 export type Cliente = ClientePrisma;
 export type ClienteCreateInput = Prisma.ClienteCreateInput;

@@ -11,7 +11,8 @@ export class ClienteRepository {
   async update(id: number, data: Partial<Cliente>): Promise<Cliente> {
     return await this.repo.update({
       where: { id },
-      data
+      data,
+      include: { enderecos: true }
     })
   }
 
@@ -37,7 +38,11 @@ export class ClienteRepository {
 
   async findById(id: number): Promise<Cliente | null> {
     return await this.repo.findUnique({
-      where: { id }
+      where: { id },
+      include: { 
+        enderecos: true, 
+        ordemServico: true
+      }
     })
   }
 

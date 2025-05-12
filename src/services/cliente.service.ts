@@ -2,7 +2,7 @@ import { EntityAlreadyExistsException } from "#exceptions/entity-already-exists.
 import { NotFoundException } from "#exceptions/not-found.js";
 import { Cliente } from "#models/cliente.js";
 import { CreateClienteDTO } from "#models/dtos/create-cliente.dto.js";
-import { ClienteRepository } from "repositories/cliente.repository.js";
+import { ClienteRepository } from "#repositories/cliente.repository.js";
 
 export class ClienteService {
   private readonly clienteRepository;
@@ -10,6 +10,17 @@ export class ClienteService {
 
   constructor() {
     this.clienteRepository = new ClienteRepository();
+  }
+
+   
+  async findById(clienteId: number){
+    const cliente = await this.clienteRepository.findById(clienteId);
+
+    if(!cliente){
+      throw new NotFoundException('Cliente não existe.')
+    }
+
+    return cliente;
   }
 
 
@@ -36,5 +47,10 @@ export class ClienteService {
     const result = await this.clienteRepository.update(clienteId, data);
 
     return result;
+  }
+
+
+  async findAll(){
+    return await this.clienteRepository.findAll();
   }
 }
