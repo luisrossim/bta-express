@@ -1,5 +1,5 @@
-import { prisma } from "#config/database.js";
-import { Cliente, ClienteCreateInput } from "#models/cliente.js";
+import { prisma } from "@/config/database.js";
+import { Cliente, ClienteCreateInput } from "@/models/cliente.js";
 
 export class ClienteRepository {
   private readonly repo = prisma.cliente;
