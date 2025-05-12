@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { CreateClienteDTO } from "#models/dtos/create-cliente.dto.js";
-import { ClienteService } from "#services/cliente.service.js";
-import { UtilsService } from "#utils/utils.service.js";
+import { CreateClienteDTO } from "@/models/dtos/create-cliente.dto.js";
+import { ClienteService } from "@/services/cliente.service.js";
+import { UtilsService } from "@/utils/utils.service.js";
 
 export class ClienteController {
   private readonly clienteService;
