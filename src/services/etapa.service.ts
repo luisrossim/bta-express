@@ -13,7 +13,7 @@ export class EtapaService {
   }
 
    
-  async findById(etapaId: number){
+  async findById(etapaId: number) {
     const etapa = await this.etapaRepository.findById(etapaId);
 
     if(!etapa){
@@ -24,11 +24,20 @@ export class EtapaService {
   }
 
 
-  async vincular(etapaId: number, userId: number) {
-    const etapa = await this.findById(etapaId);
-    const usuario = await this.usuarioService.findById(userId);
+  async findRelacionamentos(){
+    const relacionamentos = await this.etapaRepository.findRelacionamentos();
 
-    return await this.etapaRepository.vincularUsuario(etapaId, userId);
+    if(!relacionamentos){
+      throw new NotFoundException('Nenhum relacionamento encontrado.')
+    }
+
+    return relacionamentos;
+  }
+
+
+  async vincular(etapaId: number, usuarioIds: number[]) {
+    await this.findById(etapaId);
+    return await this.etapaRepository.vincularUsuario(etapaId, usuarioIds);
   }
 
 

@@ -27,11 +27,10 @@ model Endereco {
   clienteId              Int      @map("cliente_id")
   cidade                 String
   estado                 String
-  hectare                Decimal?
+  hectare                Int?
   coordenadasGeograficas String?  @map("coordenadas_geograficas")
-  kmLojaCliente          Decimal? @map("km_loja_cliente")
+  kmLojaCliente          Int?     @map("km_loja_cliente")
   referencia             String?
-  descricao              String?
   atualizadoEm           DateTime @updatedAt @map("atualizado_em")
   criadoEm               DateTime @default(now()) @map("criado_em")
 

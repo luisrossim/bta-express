@@ -7,12 +7,16 @@ const router = Router();
 const etapaController = new EtapaController();
 
 
-router.get('/:id', async (req, res, next) => {
-  await etapaController.findById(req, res).catch(next);
-}) 
+router.get('/relacionamentos', async (req, res, next) => {
+  await etapaController.findRelacionamentos(req, res).catch(next);
+})
 
 router.get('/', async (req, res, next) => {
   await etapaController.findAll(req, res).catch(next);
+})
+
+router.get('/:id', async (req, res, next) => {
+  await etapaController.findById(req, res).catch(next);
 }) 
 
 router.post('/vincular', validate(createEtapaUsuarioSchema), async (req, res, next) => {

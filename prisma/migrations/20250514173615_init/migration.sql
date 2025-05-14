@@ -17,11 +17,10 @@ CREATE TABLE "enderecos" (
     "cliente_id" INTEGER NOT NULL,
     "cidade" TEXT NOT NULL,
     "estado" TEXT NOT NULL,
-    "hectare" DECIMAL(65,30),
+    "hectare" INTEGER,
     "coordenadas_geograficas" TEXT,
-    "km_loja_cliente" DECIMAL(65,30),
+    "km_loja_cliente" INTEGER,
     "referencia" TEXT,
-    "descricao" TEXT,
     "atualizado_em" TIMESTAMP(3) NOT NULL,
     "criado_em" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

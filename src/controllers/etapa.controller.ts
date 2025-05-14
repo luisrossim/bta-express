@@ -22,10 +22,16 @@ export class EtapaController {
   }
 
 
+  async findRelacionamentos(req: Request, res: Response) {
+    const relacionamentos = await this.etapaService.findRelacionamentos();
+    return res.status(200).json(relacionamentos);
+  }
+
+
   async vincularUsuario(req: Request, res: Response) {
     const dto: CreateEtapaUsuarioDTO = req.body;
 
-    await this.etapaService.vincular(dto.etapaId, dto.usuarioId);
+    await this.etapaService.vincular(dto.etapaId, dto.usuarioIds);
 
     return res.status(200).send(); 
   }

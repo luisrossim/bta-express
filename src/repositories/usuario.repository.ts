@@ -17,7 +17,8 @@ export class UsuarioRepository {
 
   async findAll(): Promise<Usuario[]> {
     return await this.repo.findMany({
-      orderBy: { nome: "asc" }
+      orderBy: { roleId: 'asc' },
+      include: { role: true }
     })
   }
 
