@@ -33,7 +33,7 @@ CREATE TABLE "usuarios" (
     "nome" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "telefone" TEXT NOT NULL,
-    "roleId" INTEGER NOT NULL,
+    "role_id" INTEGER NOT NULL,
     "atualizado_em" TIMESTAMP(3) NOT NULL,
     "criado_em" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -109,6 +109,7 @@ CREATE TABLE "historico_os" (
     "ordem_servico_id" TEXT NOT NULL,
     "etapa_id" INTEGER NOT NULL,
     "observacoes" TEXT,
+    "concluido_em" TIMESTAMP(3),
     "criado_em" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "historico_os_pkey" PRIMARY KEY ("id")
@@ -172,7 +173,7 @@ CREATE UNIQUE INDEX "roles_sigla_key" ON "roles"("sigla");
 ALTER TABLE "enderecos" ADD CONSTRAINT "enderecos_cliente_id_fkey" FOREIGN KEY ("cliente_id") REFERENCES "clientes"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "usuarios" ADD CONSTRAINT "usuarios_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "roles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "usuarios" ADD CONSTRAINT "usuarios_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "anexos" ADD CONSTRAINT "anexos_historico_os_id_fkey" FOREIGN KEY ("historico_os_id") REFERENCES "historico_os"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
