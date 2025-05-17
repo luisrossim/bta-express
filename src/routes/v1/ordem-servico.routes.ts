@@ -28,5 +28,9 @@ router.post('/concluir-etapa/:historicoId', async (req, res, next) => {
   await ordemServicoController.concluirEtapa(req, res).catch(next);
 })
 
+router.post('/avancar-etapa/:historicoId', async (req, res, next) => {
+  await ordemServicoController.avancarEtapa(req, res).catch(next);
+})
+
 
 export default router;

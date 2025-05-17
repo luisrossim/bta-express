@@ -1,7 +1,7 @@
 import { prisma } from "@/config/database.js";
 import { CreateAssistenciaDTO } from "@/models/dtos/create-assistencia.dto.js";
 import { CreateOrdemServicoDTO } from "@/models/dtos/create-ordem-servico.dto.js";
-import { HistoricoOS } from "@/models/historico-ordem-servico.js";
+import { HistoricoOsWithIncludes } from "@/models/historico-ordem-servico.js";
 import { OrdemServico, OrdemServicoWithIncludes } from "@/models/ordem-servico.js";
 
 export class OrdemServicoRepository {
@@ -51,6 +51,16 @@ export class OrdemServicoRepository {
   }
 
 
+  async createHistorico(ordemServicoId: string, etapaId: number) {
+    return await this.repoHistorico.create({
+      data: {
+        ordemServicoId,
+        etapaId
+      }
+    })
+  }
+
+
   async createAssistencia(data: CreateAssistenciaDTO) {
     return await this.repoAssistencia.create({ data })
   }
@@ -69,10 +79,13 @@ export class OrdemServicoRepository {
   }
 
 
-  async findHistoricoById(historicoId: string): Promise<HistoricoOS | null> {
+  async findHistoricoById(historicoId: string): Promise<HistoricoOsWithIncludes | null> {
     return await this.repoHistorico.findUnique({
       where: { 
         id: historicoId
+      },
+      include: {
+        etapa: true
       }
     })
   }

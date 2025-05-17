@@ -2,8 +2,7 @@ import { InvalidArgumentsException } from "@/exceptions/invalid-arguments.js";
 import { NotFoundException } from "@/exceptions/not-found.js";
 import { CreateAssistenciaDTO } from "@/models/dtos/create-assistencia.dto.js";
 import { CreateOrdemServicoDTO } from "@/models/dtos/create-ordem-servico.dto.js";
-import { HistoricoOS } from "@/models/historico-ordem-servico.js";
-import { OrdemServicoWithIncludes } from "@/models/ordem-servico.js";
+import { EtapaFactory } from "@/models/etapa.js";
 import { OrdemServicoRepository } from "@/repositories/ordem-servico.repository.js";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale/pt-BR";
@@ -40,6 +39,24 @@ export class OrdemServicoService {
 
   async createAssistencia(assistenciaDetails: CreateAssistenciaDTO) {
     return await this.ordemServicoRepository.createAssistencia(assistenciaDetails);
+  }
+
+  
+  async avancarEtapa(historicoId: string){
+    const historico = await this.ordemServicoRepository.findHistoricoById(historicoId);
+
+    if(!historico){
+      throw new NotFoundException('Registro não encontrado');
+    }
+
+    if(!historico.concluidoEm) {
+      throw new InvalidArgumentsException('A etapa precisa ser concluída antes de avançar');
+    }
+
+    const atualEtapa = EtapaFactory.create(historico.etapaId);
+    const proximaEtapa = atualEtapa.next();
+
+    return await this.ordemServicoRepository.createHistorico(historico.ordemServicoId, proximaEtapa.getId());
   }
 
    
