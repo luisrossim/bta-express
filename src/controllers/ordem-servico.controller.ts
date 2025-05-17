@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { OrdemServicoService } from "@/services/ordem-servico.service.js";
-import { UtilsService } from "@/utils/utils.service.js";
 
 export class OrdemServicoController {
   private readonly ordemServicoService;
@@ -27,12 +26,17 @@ export class OrdemServicoController {
     return res.status(201).send();
   }
 
+  async avancarEtapa(req: Request, res: Response){
+    const { historicoId } = req.params;
+    await this.ordemServicoService.avancarEtapa(historicoId)
+    return res.status(200).send();
+  }
+
   async findById(req: Request, res: Response) {
     const { id } = req.params;
     const ordem = await this.ordemServicoService.findById(id);
     return res.status(200).json(ordem);
   }
-
 
   async findAll(req: Request, res: Response) {
     const ordens = await this.ordemServicoService.findAll();
