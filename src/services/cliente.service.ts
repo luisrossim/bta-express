@@ -1,8 +1,8 @@
-import { EntityAlreadyExistsException } from "#exceptions/entity-already-exists.js";
-import { NotFoundException } from "#exceptions/not-found.js";
-import { Cliente } from "#models/cliente.js";
-import { CreateClienteDTO } from "#models/dtos/create-cliente.dto.js";
-import { ClienteRepository } from "#repositories/cliente.repository.js";
+import { EntityAlreadyExistsException } from "@/exceptions/entity-already-exists.js";
+import { NotFoundException } from "@/exceptions/not-found.js";
+import { Cliente } from "@/models/cliente.js";
+import { CreateClienteDTO } from "@/models/dtos/create-cliente.dto.js";
+import { ClienteRepository } from "@/repositories/cliente.repository.js";
 
 export class ClienteService {
   private readonly clienteRepository;
@@ -17,7 +17,7 @@ export class ClienteService {
     const cliente = await this.clienteRepository.findById(clienteId);
 
     if(!cliente){
-      throw new NotFoundException('Cliente não existe.')
+      throw new NotFoundException('Cliente não encontrado.')
     }
 
     return cliente;
@@ -38,14 +38,8 @@ export class ClienteService {
 
 
   async update(clienteId: number, data: Partial<Cliente>) {
-    const clienteExists = await this.clienteRepository.findById(clienteId);
-
-    if (!clienteExists) {
-      throw new NotFoundException('Cliente não encontrado.');
-    }
-
+    const cliente = this.findById(clienteId);
     const result = await this.clienteRepository.update(clienteId, data);
-
     return result;
   }
 

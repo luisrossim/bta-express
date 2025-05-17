@@ -27,11 +27,10 @@ model Endereco {
   clienteId              Int      @map("cliente_id")
   cidade                 String
   estado                 String
-  hectare                Decimal?
+  hectare                Int?
   coordenadasGeograficas String?  @map("coordenadas_geograficas")
-  kmLojaCliente          Decimal? @map("km_loja_cliente")
+  kmLojaCliente          Int?     @map("km_loja_cliente")
   referencia             String?
-  descricao              String?
   atualizadoEm           DateTime @updatedAt @map("atualizado_em")
   criadoEm               DateTime @default(now()) @map("criado_em")
 
@@ -45,7 +44,7 @@ model Usuario {
   nome         String
   email        String   @unique
   telefone     String
-  roleId       Int
+  roleId       Int      @map("role_id")
   atualizadoEm DateTime @updatedAt @map("atualizado_em")
   criadoEm     DateTime @default(now()) @map("criado_em")
 
@@ -101,13 +100,13 @@ model EtapaUsuario {
 }
 
 model OrdemServico {
-  id                 String   @id @default(uuid())
-  clienteId          Int      @map("cliente_id")
-  hasAutomacao       Boolean? @map("has_automacao")
-  hasOrcamento_banco Boolean? @map("has_orcamento_banco")
-  hasProjetoPlantio  Boolean? @map("has_projeto_plantio")
-  quantidadeSetores  Int?     @map("quantidade_setores")
-  criadoEm           DateTime @default(now()) @map("criado_em")
+  id                String   @id @default(uuid())
+  clienteId         Int      @map("cliente_id")
+  hasAutomacao      Boolean  @map("has_automacao")
+  hasOrcamentoBanco Boolean  @map("has_orcamento_banco")
+  hasProjetoPlantio Boolean  @map("has_projeto_plantio")
+  quantidadeSetores Int?     @map("quantidade_setores")
+  criadoEm          DateTime @default(now()) @map("criado_em")
 
   cliente     Cliente       @relation(fields: [clienteId], references: [id])
   assistencia Assistencia?
@@ -134,11 +133,13 @@ model Assistencia {
 }
 
 model HistoricoOS {
-  id             String   @id @default(uuid())
-  ordemServicoId String   @map("ordem_servico_id")
-  etapaId        Int      @map("etapa_id")
+  id             String    @id @default(uuid())
+  ordemServicoId String    @map("ordem_servico_id")
+  etapaId        Int       @map("etapa_id")
   observacoes    String?
-  criadoEm       DateTime @default(now()) @map("criado_em")
+  concluidoEm    DateTime? @map("concluido_em")
+  atualizadoEm   DateTime? @updatedAt @map("atualizado_em")
+  criadoEm       DateTime  @default(now()) @map("criado_em")
 
   ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [id])
   etapa        Etapa        @relation(fields: [etapaId], references: [id])

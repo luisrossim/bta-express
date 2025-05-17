@@ -6,7 +6,7 @@ export const createClienteSchema = z.object({
   telefone: z.string(),
   cpf: z.string().length(11),
   enderecos: z.object({
-    create: z.array(createEnderecoSchema)
+    create: createEnderecoSchema
   }).optional()
 })
 

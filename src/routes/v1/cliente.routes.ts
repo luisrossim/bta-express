@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { ClienteController } from "#controllers/cliente.controller.js";
-import { validate } from "#middlewares/validate-dto.middleware.js";
-import { createClienteSchema } from "#models/dtos/create-cliente.dto.js";
+import { ClienteController } from "@/controllers/cliente.controller.js";
+import { validate } from "@/middlewares/validate-dto.middleware.js";
+import { createClienteSchema } from "@/models/dtos/create-cliente.dto.js";
 
 const router = Router();
 const clienteController = new ClienteController();
