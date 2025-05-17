@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import clienteRoutesV1 from '@/routes/v1/cliente.routes.js'
 import usuarioRoutesV1 from '@/routes/v1/usuario.routes.js'
 import etapaRoutesV1 from '@/routes/v1/etapa.routes.js'
+import osRoutesV1 from '@/routes/v1/ordem-servico.routes.js'
 import { errorHandler } from '@/middlewares/error-handler.middleware.js';
 
 const app = express();
@@ -25,6 +26,7 @@ app.use(cookieParser());
 app.use('/api/v1/cliente', clienteRoutesV1)
 app.use('/api/v1/usuario', usuarioRoutesV1)
 app.use('/api/v1/etapa', etapaRoutesV1)
+app.use('/api/v1/os', osRoutesV1)
 
 app.use(errorHandler);
 
