@@ -2,6 +2,9 @@ import { NotFoundException } from "@/exceptions/not-found.js";
 import { CreateUserDTO } from "@/models/dtos/create-user.dto.js";
 import { User } from "@/models/user.js";
 import { UserRepository } from "@/repositories/user.repository.js";
+import { hashPassword } from "./security/bcrypt.service.js";
+import { EntityAlreadyExistsException } from "@/exceptions/entity-already-exists.js";
+
 
 export class UserService {
   private readonly userRepository;
@@ -11,20 +14,18 @@ export class UserService {
     this.userRepository = new UserRepository();
   }
 
-   
-  async findById(userId: number){
-    const user = await this.userRepository.findById(userId);
 
-    if(!user){
-      throw new NotFoundException('Usuário não encontrado.')
+  async create(dto: CreateUserDTO) {
+    const user = await this.findByEmail(dto.email);
+
+    if(user){
+      throw new EntityAlreadyExistsException("E-mail já cadastrado")
     }
 
-    return user;
-  }
+    const hashedPassword = await hashPassword(dto.password);
+    const userToCreate = { ...dto, password: hashedPassword }
 
-
-  async create(user: CreateUserDTO) {
-    return await this.userRepository.create(user);
+    return await this.userRepository.create(userToCreate);
   }
   
 
@@ -36,5 +37,21 @@ export class UserService {
 
   async findAll(){
     return await this.userRepository.findAll();
+  }
+
+  
+  async findById(userId: number){
+    const user = await this.userRepository.findById(userId);
+
+    if(!user){
+      throw new NotFoundException('Usuário não encontrado.')
+    }
+
+    return user;
+  }
+
+
+  async findByEmail(email: string){
+    return await this.userRepository.findByEmail(email);
   }
 }

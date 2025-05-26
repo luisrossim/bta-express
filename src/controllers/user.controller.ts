@@ -23,7 +23,8 @@ export class UserController {
 
 
   async create(req: Request, res: Response) {
-    await this.userService.create(req.body);
+    const dto: CreateUserDTO = req.body;
+    await this.userService.create(dto);
     return res.status(201).send();
   }
 

@@ -5,11 +5,14 @@ export const validate = (schema: ZodSchema) => (req: Request, res: Response, nex
   const result = schema.safeParse(req.body);
 
   if (!result.success) {
-    const formatted = result.error.format();
+    const errors = result.error.issues.map(issue => ({
+      field: issue.path.join('.') || 'root',
+      message: issue.message
+    }));
 
     res.status(400).json({
       message: 'Erro de validação dos dados recebidos.',
-      errors: formatted,
+      errors
     });
     
     return;

@@ -1,5 +1,5 @@
 import { prisma } from "@/config/database.js";
-import { User, CreateUser } from "@/models/user.js";
+import { User, CreateUser, UserWithIncludes } from "@/models/user.js";
 
 export class UserRepository {
   private readonly repo = prisma.usuario;
@@ -33,4 +33,14 @@ export class UserRepository {
     })
   }
 
+  async findByEmail(email: string): Promise<UserWithIncludes | null> {
+    return await this.repo.findUnique({
+      where: {
+        email
+      },
+      include: {
+        role: true
+      }
+    })
+  }
 }

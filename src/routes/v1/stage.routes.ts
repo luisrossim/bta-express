@@ -9,24 +9,24 @@ const stageController = new StageController();
 
 
 router.get(
-  '/vinculados', 
-  asyncHandler(stageController.findAssociatedUsers)
+  '/vinculados',
+  asyncHandler((req, res, next) => stageController.findAssociatedUsers(req, res))
 )
 
 router.get(
-  '/', 
-  asyncHandler(stageController.findAll)
+  '/',
+  asyncHandler((req, res, next) => stageController.findAll(req, res))
 )
 
 router.get(
   '/:id', 
-  asyncHandler(stageController.findById)
+  asyncHandler((req, res, next) => stageController.findById(req, res))
 ) 
 
 router.post(
   '/vincular', 
   validate(associateUsersToStageSchema), 
-  asyncHandler(stageController.associateUsers)
+  asyncHandler((req, res, next) => stageController.associateUsers(req, res))
 )
 
 export default router; 

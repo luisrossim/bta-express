@@ -12,11 +12,12 @@ model Cliente {
   nome         String
   cpf          String   @unique
   telefone     String
+  enderecoId   Int      @unique @map("endereco_id")
   isAtivo      Boolean  @default(true) @map("is_ativo")
   atualizadoEm DateTime @updatedAt @map("atualizado_em")
   criadoEm     DateTime @default(now()) @map("criado_em")
 
-  enderecos    Endereco[]
+  endereco     Endereco       @relation(fields: [enderecoId], references: [id])
   ordemServico OrdemServico[]
 
   @@map("clientes")
@@ -24,7 +25,6 @@ model Cliente {
 
 model Endereco {
   id                     Int      @id @default(autoincrement())
-  clienteId              Int      @map("cliente_id")
   cidade                 String
   estado                 String
   hectare                Int?
@@ -34,7 +34,7 @@ model Endereco {
   atualizadoEm           DateTime @updatedAt @map("atualizado_em")
   criadoEm               DateTime @default(now()) @map("criado_em")
 
-  cliente Cliente @relation(fields: [clienteId], references: [id])
+  cliente Cliente?
 
   @@map("enderecos")
 }
@@ -43,6 +43,7 @@ model Usuario {
   id           Int      @id @default(autoincrement())
   nome         String
   email        String   @unique
+  password     String
   telefone     String
   roleId       Int      @map("role_id")
   atualizadoEm DateTime @updatedAt @map("atualizado_em")
@@ -56,8 +57,8 @@ model Usuario {
 }
 
 model Role {
-  id    Int    @id @default(autoincrement())
-  sigla String @unique
+  id        Int    @id @default(autoincrement())
+  descricao String @unique
 
   usuarios Usuario[]
 
