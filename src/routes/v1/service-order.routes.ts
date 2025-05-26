@@ -12,40 +12,40 @@ const serviceOrderController = new ServiceOrderController();
 
 router.get(
   '/',
-  asyncHandler(serviceOrderController.findAll)
+  asyncHandler((req, res, next) => serviceOrderController.findAll(req, res))
 )
 
 router.get(
   '/:id', 
-  asyncHandler(serviceOrderController.findById)
+  asyncHandler((req, res, next) => serviceOrderController.findById(req, res))
 )
 
 router.post(
   '/',
   validate(createServiceOrderSchema),
-  asyncHandler(serviceOrderController.create)
+  asyncHandler((req, res, next) => serviceOrderController.create(req, res))
 );
 
 router.post(
   '/assistencia', 
   validate(createAssistanceSchema), 
-  asyncHandler(serviceOrderController.createAssistance)
+  asyncHandler((req, res, next) => serviceOrderController.createAssistance(req, res))
 )
 
 router.post(
   '/historico/atribuir', 
   validate(assignUserToHistorySchema), 
-  asyncHandler(serviceOrderController.assignUserToHistory)
+  asyncHandler((req, res, next) => serviceOrderController.assignUserToHistory(req, res))
 )
 
 router.post(
   '/historico/:historyId/concluir', 
-  asyncHandler(serviceOrderController.completeStage)
+  asyncHandler((req, res, next) => serviceOrderController.completeStage(req, res))
 )
 
 router.post(
-  '/historico/:historyId/avancar', 
-  asyncHandler(serviceOrderController.nextStage)
+  '/historico/:historyId/avancar',
+  asyncHandler((req, res, next) => serviceOrderController.nextStage(req, res))
 )
 
 export default router;

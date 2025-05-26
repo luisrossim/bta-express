@@ -8,22 +8,19 @@ export class CustomerRepository {
     return await this.repo.create({ data })
   }
 
-  async update(id: number, data: Partial<Customer>): Promise<Customer> {
+  async update(customerId: number, data: Partial<Customer>): Promise<Customer> {
     return await this.repo.update({
       where: { 
-        id 
+        id: customerId
       },
-      data,
-      include: { 
-        enderecos: true 
-      }
+      data
     })
   }
 
-  async activate(id: number): Promise<Customer> {
+  async activate(customerId: number): Promise<Customer> {
     return await this.repo.update({
       where: { 
-        id 
+        id: customerId
       },
       data: {
         isAtivo: true 
@@ -31,10 +28,10 @@ export class CustomerRepository {
     })
   }
 
-  async deactivate(id: number): Promise<Customer> {
+  async deactivate(customerId: number): Promise<Customer> {
     return await this.repo.update({
       where: { 
-        id 
+        id: customerId
       },
       data: { 
         isAtivo: false 
@@ -50,22 +47,22 @@ export class CustomerRepository {
     })
   }
 
-  async findById(id: number): Promise<Customer | null> {
+  async findById(customerId: number): Promise<Customer | null> {
     return await this.repo.findUnique({
       where: { 
-        id 
+        id: customerId
       },
-      include: { 
-        enderecos: true, 
-        ordemServico: true
+      include: {
+        ordemServico: true,
+        endereco: true
       }
     })
   }
 
-  async findByCpf(cpf: string): Promise<Customer | null> {
+  async findByCpf(customerCpf: string): Promise<Customer | null> {
     return await this.repo.findUnique({
       where: { 
-        cpf 
+        cpf: customerCpf
       }
     })
   }

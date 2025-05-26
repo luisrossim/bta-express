@@ -9,23 +9,23 @@ const userController = new UserController();
 
 router.get(
   '/', 
-  asyncHandler(userController.findAll)
+  asyncHandler((req, res, next) => userController.findAll(req, res))
 )
 
 router.get(
   '/:id',
-  asyncHandler(userController.findById)
+  asyncHandler((req, res, next) => userController.findById(req, res))
 )
 
 router.post(
   '/', 
-  validate(createUserSchema), 
-  asyncHandler(userController.create)
+  validate(createUserSchema),
+  asyncHandler((req, res, next) => userController.create(req, res))
 )
 
 router.post(
   '/:id', 
-  asyncHandler(userController.update)
+  asyncHandler((req, res, next) => userController.update(req, res))
 )
 
 export default router;

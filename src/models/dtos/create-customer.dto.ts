@@ -5,9 +5,9 @@ export const createCustomerSchema = z.object({
   nome: z.string().min(2),
   telefone: z.string(),
   cpf: z.string().length(11),
-  enderecos: z.object({
+  endereco: z.object({
     create: createAddressSchema
-  }).optional()
+  })
 })
 
 export type CreateCustomerDTO = z.infer<typeof createCustomerSchema>
