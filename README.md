@@ -1,6 +1,6 @@
 ### ORDEM DE SERVIÇO API
 
-API REST construída com **Express**, **Prisma** e **PostgreSQL**, projetada para o gerenciamento de **ordens de serviço**. Inclui recursos de **autenticação**, **controle de acesso**, **upload de arquivos** com **Google Drive** e **AWS S3**, além de **monitoramento de logs** com **AWS CloudWatch/Better Stack (Logtail)**.
+API REST construída com **Express**, **Prisma** e **PostgreSQL**, projetada para o gerenciamento de **ordens de serviço**. Inclui infraestrura com **Docker** e **AWS EC2**, recursos de **autenticação**, **controle de acesso**, **upload de arquivos** com **AWS S3**, além de **monitoramento de logs** com **AWS CloudWatch/Better Stack (Logtail)**.
 
 ---
 
@@ -30,13 +30,14 @@ API REST construída com **Express**, **Prisma** e **PostgreSQL**, projetada par
 - **AWS S3**: Armazenamento de arquivos.
 - **AWS CloudWatch**: Monitoramento e armazenamento de logs.
 - **Better Stack LogTail**: Plataforma gratuita para monitoramento de logs.
-- **Google Drive API**: Armazenamento alternativo de arquivos.
 - **Winston**: Logger configurável com suporte a múltiplos transportes.
 - **Jest**: Testes automatizados.
 - **Bcrypt**: Hash de senhas.
 - **JWT HTTPOnly**: Autenticação segura.
+- **Refresh JWT Token**: Gerar novo access-token.
 - **data fns**: Manipulação de datas.
 - **express rate limit**: Proteção conta brute-force.
+- **roles middleware**: Autorização por roles.
 - **zod**: Alternativa moderna para validação de esquemas.
 - **global exceptions handler**: Tratamento centralizado de erros.
 
@@ -54,8 +55,9 @@ Crie um arquivo `.env` com as seguintes variáveis (exemplo):
 
 ```
 DATABASE_URL=postgresql://user:password@localhost:5432/mydb
-JWT_SECRET=...
-GOOGLE_DRIVE_API_KEY=...
+NODE_ENV=...
+JWTSECRET=...
+REFRESHJWTSECRET=...
 AWS_ACCESS_KEY_ID=...
 AWS_SECRET_ACCESS_KEY=...
 AWS_REGION=us-east-1
