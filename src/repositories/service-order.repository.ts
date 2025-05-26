@@ -68,7 +68,7 @@ export class ServiceOrderRepository {
       include: { 
         cliente: {
           include: {
-            enderecos: true
+            endereco: true
           }
         },
         assistencia: true,
