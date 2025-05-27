@@ -1,9 +1,8 @@
 import { prisma } from "@/config/database.js";
-import { Stage } from "@/models/stage.js";
+import { AssociatedUsers, Stage, UserStage } from "@/models/stage.js";
 
 export class StageRepository {
   private readonly repo = prisma.etapa;
-  private readonly repoAssociated = prisma.etapaUsuario;
 
 
   async findAll(): Promise<Stage[]> {
@@ -21,44 +20,44 @@ export class StageRepository {
 
 
   async findAssociated(): Promise<any[]> {
-    const relacionamentos = await this.repoAssociated.findMany({
+    const relacionamentos = await prisma.etapaUsuario.findMany({
       include: {
         etapa: true,
         usuario: true,
+      },
+      orderBy: {
+        etapaId: "asc"
       }
     });
 
-    const agrupado: Record<number, any> = {};
+    const agrupado = new Map<number, AssociatedUsers>();
 
     for (const rel of relacionamentos) {
       const etapaId = rel.etapa.id;
 
-      if (!agrupado[etapaId]) {
-        agrupado[etapaId] = {
-          etapa: rel.etapa,
-          usuarios: [],
-        };
+      if (!agrupado.has(etapaId)) {
+        agrupado.set(etapaId, {
+          stageId: etapaId,
+          users: []
+        })
       }
 
-      agrupado[etapaId].usuarios.push(rel.usuario);
+      agrupado.get(etapaId)!.users.push(rel.usuario)
     }
 
-    return Object.values(agrupado);
+    return Array.from(agrupado.values())
   }
 
 
-  async associateUsers(stageId: number, usersId: number[]){
-    await this.repoAssociated.deleteMany({
-      where: { 
-        etapaId: stageId
-      }
-    })
+  async associateUsers(stageId: number, data: UserStage[]){
+    await prisma.$transaction(async (tr) => {
+      await tr.etapaUsuario.deleteMany({
+        where: {
+          etapaId: stageId
+        }
+      })
 
-    return await this.repoAssociated.createMany({
-      data: usersId.map(id => ({
-        etapaId: stageId,
-        usuarioId: id
-      }))
+      await tr.etapaUsuario.createMany({ data })
     })
   }
 }

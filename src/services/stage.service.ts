@@ -1,4 +1,5 @@
 import { NotFoundException } from "@/exceptions/not-found.js";
+import { UserStage } from "@/models/stage.js";
 import { StageRepository } from "@/repositories/stage.repository.js";
 
 export class StageService {
@@ -28,7 +29,13 @@ export class StageService {
 
   async associateUsers(stageId: number, usersId: number[]) {
     await this.findById(stageId);
-    return await this.stageRepository.associateUsers(stageId, usersId);
+
+    const data: UserStage[] = usersId.map(userId => ({
+      etapaId: stageId,
+      usuarioId: userId
+    })) 
+
+    return await this.stageRepository.associateUsers(stageId, data);
   }
 
 

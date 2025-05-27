@@ -10,6 +10,7 @@ import { Negociacao } from "./stages/negociacao.js";
 import { PainelEletrico } from "./stages/painel-eletrico.js";
 import { SeparacaoEntrega } from "./stages/separacao-entrega.js";
 import { Montagem } from "./stages/montagem.js";
+import { User } from "./user.js";
 
 export type Stage = Etapa;
 export type UserStage = EtapaUsuario;
@@ -42,4 +43,9 @@ export class StageFactory {
         throw new InvalidArgumentsException('Erro ao vincular dados concretos da etapa');
     }
   }
+}
+
+export interface AssociatedUsers {
+  stageId: number
+  users: User[]
 }
