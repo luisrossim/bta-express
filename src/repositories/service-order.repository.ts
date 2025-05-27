@@ -1,6 +1,6 @@
 import { prisma } from "@/config/database.js";
-import { CreateAssistanceDTO } from "@/models/dtos/create-assistance.dto.js";
 import { CreateServiceOrderDTO } from "@/models/dtos/create-service-order.dto.js";
+import { StageEnum } from "@/models/enums/stage.enum.js";
 import { ServiceOrder, ServiceOrderWithIncludes } from "@/models/service-order.js";
 
 export class ServiceOrderRepository {
@@ -9,7 +9,7 @@ export class ServiceOrderRepository {
   async create(data: CreateServiceOrderDTO): Promise<ServiceOrder> {
     const now = new Date();
 
-    const { etapa, cliente, ...order } = data;
+    const { etapa, cliente, assistencia, ...order } = data;
 
     const res: ServiceOrder = await prisma.$transaction(async (tr) => {
       const ordemCriada = await tr.ordemServico.create({ 
@@ -27,6 +27,15 @@ export class ServiceOrderRepository {
           criadoEm: now
         }
       })
+
+      if(assistencia && data.etapa.id === StageEnum.ASSISTENCIA){
+        await tr.assistencia.create({
+          data: {
+            ordemServicoId: ordemCriada.id,
+            ...assistencia
+          }
+        })
+      }
 
       return ordemCriada;
     })
@@ -101,10 +110,5 @@ export class ServiceOrderRepository {
         }
       }
     })
-  }
-
-  
-  async createAssistance(data: CreateAssistanceDTO) {
-    return await prisma.assistencia.create({ data })
   }
 }

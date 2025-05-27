@@ -24,11 +24,6 @@ export class ServiceOrderService {
   }
 
 
-  async createAssistance(details: CreateAssistanceDTO) {
-    return await this.serviceOrderRepository.createAssistance(details);
-  }
-
-
   async completeStage(historyId: string){
     const history = await this.findHistoryById(historyId);
 

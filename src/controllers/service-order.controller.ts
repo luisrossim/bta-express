@@ -18,11 +18,6 @@ export class ServiceOrderController {
     return res.status(201).send();
   }
 
-  async createAssistance(req: Request, res: Response) {
-    await this.serviceOrderService.createAssistance(req.body);
-    return res.status(201).send();
-  }
-
   async completeStage(req: Request, res: Response) {
     const { historyId } = req.params;
     await this.serviceOrderService.completeStage(historyId);

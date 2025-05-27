@@ -27,12 +27,6 @@ router.post(
 );
 
 router.post(
-  '/assistencia', 
-  validate(createAssistanceSchema), 
-  asyncHandler((req, res, next) => serviceOrderController.createAssistance(req, res))
-)
-
-router.post(
   '/historico/atribuir', 
   validate(assignUserToHistorySchema), 
   asyncHandler((req, res, next) => serviceOrderController.assignUserToHistory(req, res))
