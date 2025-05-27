@@ -81,7 +81,7 @@ model Anexo {
 
 model Etapa {
   id        Int    @id @default(autoincrement())
-  descricao String
+  descricao String @unique
 
   etapaUsuario EtapaUsuario[]
   historicoOs  HistoricoOS[]
