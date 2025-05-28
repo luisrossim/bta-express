@@ -22,14 +22,12 @@ router.get(
 
 router.post(
   '/',
-  JWTAuth,
   validate(createCustomerSchema), 
   asyncHandler((req, res, next) => customerController.create(req, res))
 );
 
 router.post(
   '/:id',
-  JWTAuth,
   asyncHandler((req, res, next) => customerController.update(req, res))
 );
 

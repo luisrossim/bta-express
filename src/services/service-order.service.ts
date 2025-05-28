@@ -6,22 +6,22 @@ import { StageFactory } from "@/models/stage.js";
 import { ServiceOrderHistoryRepository } from "@/repositories/service-order-history.repository.js";
 import { ServiceOrderRepository } from "@/repositories/service-order.repository.js";
 import { UtilsService } from "@/utils/utils.service.js";
-import { bucketName, client } from "@/config/s3client.js";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { bucketName, client, getSignedUrl } from "@/config/s3client.js";
+import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { CustomError } from "@/exceptions/custom-error.js";
-import { CreateAttach } from "@/models/file.js";
-import { FileRepository } from "@/repositories/file.repository.js";
+import { AttachmentWithSignedUrl, CreateAttach } from "@/models/attachment.js";
+import { AttachmentRepository } from "@/repositories/attachment.repository.js";
 
 export class ServiceOrderService {
   private readonly serviceOrderRepository;
   private readonly historyRepository;
-  private readonly fileRepository;
+  private readonly attachmentRepository;
 
 
   constructor() {
     this.serviceOrderRepository = new ServiceOrderRepository();
     this.historyRepository = new ServiceOrderHistoryRepository();
-    this.fileRepository = new FileRepository();
+    this.attachmentRepository = new AttachmentRepository();
   }
 
 
@@ -67,7 +67,7 @@ export class ServiceOrderService {
   }
 
 
-  async attachFileToHistory(historyId: string, file: any){
+  async attachFile(id: string, file: any){
     if (!this.fileTypeIsValid(file)){
       throw new InvalidArgumentsException("Apenas arquivos .jpg, .png ou .pdf são permitidos.");
     }
@@ -94,24 +94,46 @@ export class ServiceOrderService {
     }
 
     const attach: CreateAttach = {
-      historicoOsId: historyId,
+      ordemServicoId: id,
       url: randomImageKey,
       tipo: file.mimetype,
       descricao: file.originalname,
     }
 
-    await this.fileRepository.create(attach);
+    await this.attachmentRepository.create(attach);
+  }
+
+
+  async getSignedUrlToAttachment(attachmentId: string): Promise<AttachmentWithSignedUrl> {
+    const attachment = await this.attachmentRepository.findById(attachmentId);
+
+    if(!attachment){
+      throw new NotFoundException("Anexo não encontrado");
+    }
+
+    const getObjectParams = {
+      Bucket: bucketName,
+      Key: attachment.url
+    }
+
+    const command = new GetObjectCommand(getObjectParams);
+    const signedUrl = await getSignedUrl(client, command, { expiresIn: 3600 });
+
+    return {
+      ...attachment,
+      url_temporaria: signedUrl
+    }
   }
 
    
   async findServiceOrderById(serviceOrderId: string) {
-    const serviceOrder = await this.serviceOrderRepository.findById(serviceOrderId);
+    const result = await this.serviceOrderRepository.findById(serviceOrderId);
 
-    if(!serviceOrder){
+    if(!result){
       throw new NotFoundException('Ordem de serviço não encontrada.')
     }
 
-    return serviceOrder;
+    return result;
   }
 
 

@@ -5,6 +5,7 @@ import { assignUserToHistorySchema } from "@/models/dtos/assign-user-to-history.
 import { ServiceOrderController } from "@/controllers/service-order.controller.js";
 import { createServiceOrderSchema } from "@/models/dtos/create-service-order.dto.js";
 import { asyncHandler } from "@/utils/async-handler.js";
+import { requestLimiter } from "@/middlewares/rate-limit.middleware.js";
 
 const router = Router();
 const storage = multer.memoryStorage();
@@ -15,6 +16,11 @@ const serviceOrderController = new ServiceOrderController();
 router.get(
   '/',
   asyncHandler((req, res, next) => serviceOrderController.findAll(req, res))
+)
+
+router.get(
+  '/anexo/:attachmentId', 
+  asyncHandler((req, res, next) => serviceOrderController.getSignedUrlToAttachment(req, res))
 )
 
 router.get(
@@ -45,9 +51,10 @@ router.post(
 )
 
 router.post(
-  '/historico/:historyId/anexar',
+  '/:id/anexar',
+  requestLimiter,
   upload.single('image'),
-  asyncHandler((req, res, next) => serviceOrderController.attachFileToHistory(req, res))
+  asyncHandler((req, res, next) => serviceOrderController.attachFile(req, res))
 )
 
 export default router;

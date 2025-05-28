@@ -39,13 +39,20 @@ export class ServiceOrderController {
   }
 
 
-  async attachFileToHistory(req: Request, res: Response) {
-    const { historyId } = req.params;
+  async attachFile(req: Request, res: Response) {
+    const { id } = req.params;
     const file = req.file;
 
-    await this.serviceOrderService.attachFileToHistory(historyId, file);
+    await this.serviceOrderService.attachFile(id, file);
 
     return res.status(200).send();
+  }
+
+
+  async getSignedUrlToAttachment(req: Request, res: Response){
+    const { attachmentId } = req.params;
+    const attachmentWithSignedUrl = await this.serviceOrderService.getSignedUrlToAttachment(attachmentId);
+    return res.status(200).json(attachmentWithSignedUrl) 
   }
 
 

@@ -1,6 +1,7 @@
 import { AuthController } from "@/controllers/auth.controller.js";
 import { authorizeRoles } from "@/middlewares/authorize-roles.middleware.js";
 import { JWTAuth } from "@/middlewares/jwt.middleware.js";
+import { requestLimiter } from "@/middlewares/rate-limit.middleware.js";
 import { validate } from "@/middlewares/validate-dto.middleware.js";
 import { authRequestSchema } from "@/models/dtos/auth.dto.js";
 import { asyncHandler } from "@/utils/async-handler.js";
@@ -11,6 +12,7 @@ const authController = new AuthController();
 
 router.post(
   '/login',
+  requestLimiter,
   validate(authRequestSchema),
   asyncHandler((req, res, next) => authController.login(req, res))
 );
