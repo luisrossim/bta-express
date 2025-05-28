@@ -1,0 +1,60 @@
+import { prisma } from "@/config/database.js";
+
+async function seed(){
+  await prisma.role.createMany({
+    data: [
+      { id: 1, descricao: 'Admin'},
+      { id: 2, descricao: 'Técnico'},
+      { id: 3, descricao: 'Assistente'}
+    ]
+  })
+
+  await prisma.usuario.upsert({
+    where: { email: 'admin@bta.com.br' },
+    update: {},
+    create: {
+      nome: 'System Admin',
+      email: 'admin@bta.com.br',
+      password: '$2a$12$zekcUVczRbHwHqEnY7YiKuHt9XnZKTK847QEcVnRUkrnxCMFDaTi6',
+      telefone: '27999999999',
+      role: {
+        connect: {
+          descricao: 'Admin'
+        }
+      }
+    }
+  })
+
+  await prisma.etapa.createMany({
+    data: [
+      { id: 1, descricao: "Medição" },
+      { id: 2, descricao: "Projeto" },
+      { id: 3, descricao: "Lançamento de orçamento" },
+      { id: 4, descricao: "Análise de orçamento" },
+      { id: 5, descricao: "Apresentação do projeto" },
+      { id: 6, descricao: "Negociação" },
+      { id: 7, descricao: "Painel elétrico" },
+      { id: 8, descricao: "Separação e entrega" },
+      { id: 9, descricao: "Montagem" },
+      { id: 10, descricao: "Assistência" }
+    ]
+  });
+
+  await prisma.tipoEnergia.createMany({
+    data: [
+      { id: 1, descricao: "Monofásico" },
+      { id: 2, descricao: "Trifásico"}
+    ]
+  })
+}
+
+seed()
+  .then(() => {
+    console.log("Seeded.");
+  })
+  .catch((err) => {
+    console.error("Erro ao rodar seed:", err);
+  })
+  .finally(() => {
+    prisma.$disconnect();
+  });

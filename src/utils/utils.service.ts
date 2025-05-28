@@ -1,5 +1,6 @@
+import { ptBR } from "date-fns/locale/pt-BR";
 import { InvalidArgumentsException } from "../exceptions/invalid-arguments.js";
-import { isValid, parse } from "date-fns";
+import { format, isValid, parse } from "date-fns";
 
 export class UtilsService {
     static parseStringToValidDate(_data: string): Date {
@@ -73,5 +74,9 @@ export class UtilsService {
         return Object.fromEntries(
             Object.entries(obj).filter(([_, v]) => v !== undefined && v !== null && v !== '')
         );
+    }
+
+    static formatDateToPTBR(date: Date) {
+        return format(date, "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR });
     }
 }

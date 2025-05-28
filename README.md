@@ -1,6 +1,13 @@
 ### ORDEM DE SERVIÇO API
 
-API REST construída com **Express**, **Prisma** e **PostgreSQL**, projetada para o gerenciamento de **ordens de serviço**. Inclui recursos de **autenticação**, **controle de acesso**, **upload de arquivos** com **Google Drive** e **AWS S3**, além de **monitoramento de logs** com **AWS CloudWatch/Better Stack (Logtail)**.
+API REST construída com **Express**, **Prisma** e **PostgreSQL**, projetada para o gerenciamento de **ordens de serviço**. Inclui infraestrura com **Docker** e **AWS EC2**, recursos de **autenticação**, **controle de acesso**, **upload de arquivos** com **AWS S3**, além de **monitoramento de logs** com **AWS CloudWatch/Better Stack (Logtail)**.
+
+---
+
+#### 🤝 Prisma Migrate (seed)
+
+- `npx prisma migrate dev`
+- `npx prisma db seed`
 
 ---
 
@@ -9,6 +16,9 @@ API REST construída com **Express**, **Prisma** e **PostgreSQL**, projetada par
 - `main`
 - `develop`
 - `feature/...`
+- `bugfix/...`
+- `hotfix/...`
+- `release/...`
 
 ---
 
@@ -30,13 +40,14 @@ API REST construída com **Express**, **Prisma** e **PostgreSQL**, projetada par
 - **AWS S3**: Armazenamento de arquivos.
 - **AWS CloudWatch**: Monitoramento e armazenamento de logs.
 - **Better Stack LogTail**: Plataforma gratuita para monitoramento de logs.
-- **Google Drive API**: Armazenamento alternativo de arquivos.
 - **Winston**: Logger configurável com suporte a múltiplos transportes.
 - **Jest**: Testes automatizados.
 - **Bcrypt**: Hash de senhas.
 - **JWT HTTPOnly**: Autenticação segura.
+- **Refresh JWT Token**: Gerar novo access-token.
 - **data fns**: Manipulação de datas.
 - **express rate limit**: Proteção conta brute-force.
+- **roles middleware**: Autorização por roles.
 - **zod**: Alternativa moderna para validação de esquemas.
 - **global exceptions handler**: Tratamento centralizado de erros.
 
@@ -53,10 +64,12 @@ A pipeline de CI (GitHub Actions) roda nas branches develop e main, testando con
 Crie um arquivo `.env` com as seguintes variáveis (exemplo):
 
 ```
+NODE_ENV=...
 DATABASE_URL=postgresql://user:password@localhost:5432/mydb
 JWT_SECRET=...
-GOOGLE_DRIVE_API_KEY=...
-AWS_ACCESS_KEY_ID=...
+REFRESH_JWT_SECRET=...
+AWS_S3_BUCKET_REGION=...
+AWS_S3_BUCKET_NAME=...
+AWS_ACCESS_KEY=...
 AWS_SECRET_ACCESS_KEY=...
-AWS_REGION=us-east-1
 ```
