@@ -56,12 +56,7 @@ export class ServiceOrderRepository {
           },
           take: 1,
           include: {
-            etapa: true,
-            atribuicoes: {
-              include: {
-                usuario: true
-              }
-            }
+            etapa: true
           }
         }
       }
@@ -80,6 +75,7 @@ export class ServiceOrderRepository {
             endereco: true
           }
         },
+        anexos: true,
         assistencia: true,
         historicoOs: {
           orderBy: { 
@@ -105,7 +101,7 @@ export class ServiceOrderRepository {
               omit: {
                 usuarioId: true
               }
-            } 
+            }
           }
         }
       }

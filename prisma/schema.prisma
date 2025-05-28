@@ -66,15 +66,14 @@ model Role {
 }
 
 model Anexo {
-  id            String   @id @default(uuid())
-  historicoOsId String   @map("historico_os_id")
-  tipoAnexoId   Int      @map("tipo_anexo_id")
-  url           String
-  descricao     String?
-  criadoEm      DateTime @default(now()) @map("criado_em")
+  id             String   @id @default(uuid())
+  ordemServicoId String   @map("ordem_servico_id")
+  url            String   @unique
+  tipo           String
+  descricao      String
+  criadoEm       DateTime @default(now()) @map("criado_em")
 
-  historicoOs HistoricoOS @relation(fields: [historicoOsId], references: [id])
-  tipoAnexo   TipoAnexo   @relation(fields: [tipoAnexoId], references: [id])
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [id])
 
   @@map("anexos")
 }
@@ -112,6 +111,7 @@ model OrdemServico {
   cliente     Cliente       @relation(fields: [clienteId], references: [id])
   assistencia Assistencia?
   historicoOs HistoricoOS[]
+  anexos      Anexo[]
 
   @@map("ordem_servico")
 }
@@ -144,7 +144,6 @@ model HistoricoOS {
 
   ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [id])
   etapa        Etapa        @relation(fields: [etapaId], references: [id])
-  anexos       Anexo[]
   atribuicoes  Atribuicao[]
 
   @@map("historico_os")
@@ -159,15 +158,6 @@ model Atribuicao {
 
   @@id([historicoOsId, usuarioId])
   @@map("atribuicoes")
-}
-
-model TipoAnexo {
-  id        Int    @id @default(autoincrement())
-  descricao String
-
-  anexos Anexo[]
-
-  @@map("tipo_anexo")
 }
 
 model TipoEnergia {

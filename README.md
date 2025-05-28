@@ -4,11 +4,21 @@ API REST construída com **Express**, **Prisma** e **PostgreSQL**, projetada par
 
 ---
 
+#### 🤝 Prisma Migrate (seed)
+
+- `npx prisma migrate dev`
+- `npx prisma db seed`
+
+---
+
 #### ↪️ Gitflow workflow
 
 - `main`
 - `develop`
 - `feature/...`
+- `bugfix/...`
+- `hotfix/...`
+- `release/...`
 
 ---
 
@@ -54,11 +64,12 @@ A pipeline de CI (GitHub Actions) roda nas branches develop e main, testando con
 Crie um arquivo `.env` com as seguintes variáveis (exemplo):
 
 ```
-DATABASE_URL=postgresql://user:password@localhost:5432/mydb
 NODE_ENV=...
-JWTSECRET=...
-REFRESHJWTSECRET=...
-AWS_ACCESS_KEY_ID=...
+DATABASE_URL=postgresql://user:password@localhost:5432/mydb
+JWT_SECRET=...
+REFRESH_JWT_SECRET=...
+AWS_S3_BUCKET_REGION=...
+AWS_S3_BUCKET_NAME=...
+AWS_ACCESS_KEY=...
 AWS_SECRET_ACCESS_KEY=...
-AWS_REGION=us-east-1
 ```
