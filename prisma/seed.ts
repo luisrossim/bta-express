@@ -3,9 +3,9 @@ import { prisma } from "@/config/database.js";
 async function seed(){
   await prisma.role.createMany({
     data: [
-      { id: 1, descricao: 'admin'},
-      { id: 2, descricao: 'tecnico'},
-      { id: 3, descricao: 'assistente'}
+      { id: 1, descricao: 'Admin'},
+      { id: 2, descricao: 'Técnico'},
+      { id: 3, descricao: 'Assistente'}
     ]
   })
 
@@ -13,13 +13,13 @@ async function seed(){
     where: { email: 'admin@bta.com.br' },
     update: {},
     create: {
-      nome: 'Admin',
+      nome: 'System Admin',
       email: 'admin@bta.com.br',
       password: '$2a$12$zekcUVczRbHwHqEnY7YiKuHt9XnZKTK847QEcVnRUkrnxCMFDaTi6',
       telefone: '27999999999',
       role: {
         connect: {
-          descricao: 'admin'
+          descricao: 'Admin'
         }
       }
     }
@@ -44,13 +44,6 @@ async function seed(){
     data: [
       { id: 1, descricao: "Monofásico" },
       { id: 2, descricao: "Trifásico"}
-    ]
-  })
-
-  await prisma.tipoAnexo.createMany({
-    data: [
-      { id: 1, descricao: "image" },
-      { id: 2, descricao: "pdf" }
     ]
   })
 }

@@ -68,13 +68,12 @@ model Role {
 model Anexo {
   id            String   @id @default(uuid())
   historicoOsId String   @map("historico_os_id")
-  tipoAnexoId   Int      @map("tipo_anexo_id")
   url           String
-  descricao     String?
+  tipo          String
+  descricao     String
   criadoEm      DateTime @default(now()) @map("criado_em")
 
   historicoOs HistoricoOS @relation(fields: [historicoOsId], references: [id])
-  tipoAnexo   TipoAnexo   @relation(fields: [tipoAnexoId], references: [id])
 
   @@map("anexos")
 }
@@ -159,15 +158,6 @@ model Atribuicao {
 
   @@id([historicoOsId, usuarioId])
   @@map("atribuicoes")
-}
-
-model TipoAnexo {
-  id        Int    @id @default(autoincrement())
-  descricao String
-
-  anexos Anexo[]
-
-  @@map("tipo_anexo")
 }
 
 model TipoEnergia {

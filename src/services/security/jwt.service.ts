@@ -1,8 +1,8 @@
 import { addDays, getUnixTime, isAfter, set } from "date-fns";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-const aSecretKey: string = process.env.JWTSECRET || "@d3fault_@mendo1m";
-const rSecretKey: string = process.env.REFRESHJWTSECRET || "@d3fault_mel@ncia";
+const aSecretKey: string = process.env.JWT_SECRET || "@d3fault_@mendo1m";
+const rSecretKey: string = process.env.REFRESH_JWT_SECRET || "@d3fault_mel@ncia";
 
 
 export function generateAccessToken(login: string, role: string): string {
