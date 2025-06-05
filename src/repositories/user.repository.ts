@@ -1,5 +1,5 @@
 import { prisma } from "@/config/database.js";
-import { CreateUserDTO, UserDTO } from "@/models/dtos/create-user.dto.js";
+import { CreateUserDTO, UserDTO } from "@/models/dtos/user.dto.js";
 import { User, UserOmitPassword, UserWithIncludes } from "@/models/user.js";
 
 export class UserRepository {
@@ -76,7 +76,7 @@ export class UserRepository {
   async deactivate(id: number): Promise<void> {
     await this.repo.update({
       where: { id },
-      data: { ativo: false }
+      data: { isAtivo: false }
     })
   }
 }

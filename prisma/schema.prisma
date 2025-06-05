@@ -13,7 +13,6 @@ model Cliente {
   cpf          String   @unique
   telefone     String
   enderecoId   Int      @unique @map("endereco_id")
-  isAtivo      Boolean  @default(true) @map("is_ativo")
   atualizadoEm DateTime @updatedAt @map("atualizado_em")
   criadoEm     DateTime @default(now()) @map("criado_em")
 
@@ -40,19 +39,19 @@ model Endereco {
 }
 
 model Usuario {
-  id           Int      @id @default(autoincrement())
-  nome         String
-  email        String   @unique
-  password     String
-  telefone     String
-  roleId       Int      @map("role_id")
-  ativo        Boolean  @default(true)
-  atualizadoEm DateTime @updatedAt @map("atualizado_em")
-  criadoEm     DateTime @default(now()) @map("criado_em")
+  id            Int      @id @default(autoincrement())
+  nome          String
+  email         String   @unique
+  password      String
+  telefone      String
+  roleId        Int      @map("role_id")
+  isAtivo       Boolean  @default(true) @map("is_ativo")
+  atualizadoEm  DateTime @updatedAt @map("atualizado_em")
+  criadoEm      DateTime @default(now()) @map("criado_em")
 
-  role         Role           @relation(fields: [roleId], references: [id])
-  etapaUsuario EtapaUsuario[]
-  atribuicoes  Atribuicao[]
+  role          Role           @relation(fields: [roleId], references: [id])
+  etapaUsuario  EtapaUsuario[]
+  atribuicoes   Atribuicao[]
 
   @@map("usuarios")
 }

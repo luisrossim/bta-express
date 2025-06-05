@@ -1,5 +1,5 @@
 import { NotFoundException } from "@/exceptions/not-found.js";
-import { CreateUserDTO, UserDTO } from "@/models/dtos/create-user.dto.js";
+import { CreateUserDTO, UserDTO } from "@/models/dtos/user.dto.js";
 import { UserRepository } from "@/repositories/user.repository.js";
 import { hashPassword } from "./security/bcrypt.service.js";
 import { EntityAlreadyExistsException } from "@/exceptions/entity-already-exists.js";

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { CustomerService } from "@/services/customer.service.js";
 import { UtilsService } from "@/utils/utils.service.js";
-import { CreateCustomerDTO } from "@/models/dtos/create-customer.dto.js";
+import { CustomerDTO } from "@/models/dtos/customer.dto.js";
 
 export class CustomerController {
   private readonly customerService;
@@ -13,7 +13,7 @@ export class CustomerController {
 
 
   async create(req: Request, res: Response) {
-    const dto: CreateCustomerDTO = req.body;
+    const dto: CustomerDTO = req.body;
     await this.customerService.create(dto);
     return res.status(201).send();
   }
@@ -21,7 +21,7 @@ export class CustomerController {
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const dto: CreateCustomerDTO = req.body;
+    const dto: CustomerDTO = req.body;
 
     const idNumber = UtilsService.parseParamToValidNumber(id);
     const customer = await this.customerService.update(idNumber, dto);

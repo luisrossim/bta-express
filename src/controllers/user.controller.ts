@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UtilsService } from "@/utils/utils.service.js";
 import { UserService } from "@/services/user.service.js";
-import { CreateUserDTO, UserDTO } from "@/models/dtos/create-user.dto.js";
+import { CreateUserDTO, UserDTO } from "@/models/dtos/user.dto.js";
 
 export class UserController {
   private readonly userService;

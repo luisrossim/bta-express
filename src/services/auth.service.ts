@@ -14,7 +14,7 @@ export class AuthService {
   async authenticate(dto: AuthRequest){
     const user = await this.userService.findByEmail(dto.login);
 
-    if(!user){
+    if(!user || !user.isAtivo){
       throw new InvalidArgumentsException("Login não encontrado.")
     }
 
