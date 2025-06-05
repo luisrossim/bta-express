@@ -9,6 +9,7 @@ export type AuthRequest = z.infer<typeof authRequestSchema>
 
 export interface AuthResponse {
   login: string
+  role: string
   accessToken: string
   refreshToken: string
 }

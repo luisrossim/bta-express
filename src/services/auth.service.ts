@@ -26,6 +26,7 @@ export class AuthService {
     
     const authResponse: AuthResponse = {
       login: user.email,
+      role: user.role.descricao,
       accessToken: generateAccessToken(user.email, user.role.descricao),
       refreshToken: generateRefreshToken(user.email, user.role.descricao)
     }
@@ -45,6 +46,7 @@ export class AuthService {
     
     const updatedAuthData: AuthResponse = {
       login: decoded.login,
+      role: decoded.role,
       accessToken: newAccessToken,
       refreshToken: refreshToken
     }

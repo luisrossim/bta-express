@@ -1,5 +1,4 @@
 import { AuthController } from "@/controllers/auth.controller.js";
-import { authorizeRoles } from "@/middlewares/authorize-roles.middleware.js";
 import { JWTAuth } from "@/middlewares/jwt.middleware.js";
 import { requestLimiter } from "@/middlewares/rate-limit.middleware.js";
 import { validate } from "@/middlewares/validate-dto.middleware.js";
@@ -18,19 +17,20 @@ router.post(
 );
 
 router.get(
-  '/recover-access',
+  '/recover',
+  requestLimiter,
   asyncHandler((req, res, next) => authController.refreshAccess(req, res))
 )
 
 router.post(
   '/logout',
+  requestLimiter,
   asyncHandler((req, res, next) => authController.logoutAndClearCookies(req, res))
 )
 
 router.get(
-  '/check-access',
+  '/verify',
   JWTAuth,
-  authorizeRoles(["admin"]),
   asyncHandler((req, res, next) => authController.checkAccess(req, res))
 )
 

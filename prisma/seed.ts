@@ -13,9 +13,9 @@ async function seed(){
     where: { email: 'admin@bta.com.br' },
     update: {},
     create: {
-      nome: 'System Admin',
+      nome: 'Admin',
       email: 'admin@bta.com.br',
-      password: '$2a$12$zekcUVczRbHwHqEnY7YiKuHt9XnZKTK847QEcVnRUkrnxCMFDaTi6',
+      password: '$2a$12$nc5vxpwbZ6XghqJDk3qOFe5i5PtePZIb2aIEXx2b4DoPpIc2g5cQ6',
       telefone: '27999999999',
       role: {
         connect: {

@@ -1,35 +1,64 @@
 import { prisma } from "@/config/database.js";
-import { User, CreateUser, UserWithIncludes } from "@/models/user.js";
+import { CreateUserDTO, UserDTO } from "@/models/dtos/create-user.dto.js";
+import { User, UserOmitPassword, UserWithIncludes } from "@/models/user.js";
 
 export class UserRepository {
   private readonly repo = prisma.usuario;
 
-  async create(data: CreateUser): Promise<User> {
-    return await this.repo.create({ data })
+  async create(data: CreateUserDTO): Promise<User> {
+    const { role, ...user } = data;
+
+    return await this.repo.create({
+      data: {
+        ...user,
+        role: {
+          connect: {
+            id: role.id
+          }
+        }
+      }
+    })
   }
 
-  async update(id: number, data: Partial<User>): Promise<User> {
+  async update(id: number, data: Partial<UserDTO>): Promise<UserOmitPassword> {
+    const { role, ...user } = data;
+
     return await this.repo.update({
       where: { id },
-      data
+      data: {
+        ...user,
+        role: {
+          connect: {
+            id: role?.id
+          }
+        }
+      },
+      omit: { 
+        password: true 
+      }
     })
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserOmitPassword[]> {
     return await this.repo.findMany({
-      orderBy: { roleId: 'asc' },
-      include: { role: true }
+      orderBy: [
+        { roleId: 'asc' },
+        { nome: 'asc' }
+      ],
+      include: { role: true },
+      omit: { password: true }
     })
   }
 
-  async findById(id: number): Promise<User | null> {
+  async findById(id: number): Promise<UserOmitPassword | null> {
     return await this.repo.findUnique({
       where: { id },
       include: {
         role: true,
         atribuicoes: true,
         etapaUsuario: true
-      }
+      },
+      omit: { password: true }
     })
   }
 
@@ -41,6 +70,13 @@ export class UserRepository {
       include: {
         role: true
       }
+    })
+  }
+
+  async deactivate(id: number): Promise<void> {
+    await this.repo.update({
+      where: { id },
+      data: { ativo: false }
     })
   }
 }

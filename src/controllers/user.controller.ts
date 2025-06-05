@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UtilsService } from "@/utils/utils.service.js";
 import { UserService } from "@/services/user.service.js";
-import { CreateUserDTO } from "@/models/dtos/create-user.dto.js";
+import { CreateUserDTO, UserDTO } from "@/models/dtos/create-user.dto.js";
 
 export class UserController {
   private readonly userService;
@@ -31,7 +31,7 @@ export class UserController {
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const dto: CreateUserDTO = req.body;
+    const dto: UserDTO = req.body;
 
     const idNumber = UtilsService.parseParamToValidNumber(id);
     const user = await this.userService.update(idNumber, dto);
@@ -48,5 +48,15 @@ export class UserController {
     }
 
     return res.status(200).json(users);
+  }
+
+
+  async softDelete(req: Request, res: Response) {
+    const { id } = req.params;
+    
+    const idNumber = UtilsService.parseParamToValidNumber(id);
+    await this.userService.deactivate(idNumber);
+
+    return res.status(200).send();
   }
 }

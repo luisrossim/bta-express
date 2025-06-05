@@ -35,7 +35,10 @@ export class AuthController {
       maxAge: this.refreshTokenMaxAge
     });
 
-    res.status(200).send();
+    res.status(200).json({
+      login: authResponse.login,
+      role: authResponse.role
+    });
   }
 
 
