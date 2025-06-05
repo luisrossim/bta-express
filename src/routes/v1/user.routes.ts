@@ -38,11 +38,11 @@ router.put(
   asyncHandler((req, res, next) => userController.update(req, res))
 )
 
-router.put(
-  '/:id/desativar',
+router.patch(
+  '/:id/status',
   JWTAuth,
   authorizeRoles(['Admin']),
-  asyncHandler((req, res, next) => userController.softDelete(req, res))
+  asyncHandler((req, res, next) => userController.changeStatus(req, res))
 )
 
 export default router;

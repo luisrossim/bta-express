@@ -1,5 +1,6 @@
 import { prisma } from "@/config/database.js";
-import { AssociatedUsers, Stage, UserStage } from "@/models/stage.js";
+import { AssociateUserToStageDTO } from "@/models/dtos/associate-user-to-stage.dto.js";
+import { AssociatedUsers, Stage } from "@/models/stage.js";
 
 export class StageRepository {
   private readonly repo = prisma.etapa;
@@ -19,11 +20,17 @@ export class StageRepository {
   }
 
 
-  async findAssociated(): Promise<any[]> {
+  async findAssociated(): Promise<AssociatedUsers[]> {
     const relacionamentos = await prisma.etapaUsuario.findMany({
       include: {
         etapa: true,
-        usuario: true,
+        usuario: {
+          select: {
+            id: true,
+            nome: true,
+            role: true
+          }
+        }
       },
       orderBy: {
         etapaId: "asc"
@@ -49,15 +56,23 @@ export class StageRepository {
   }
 
 
-  async associateUsers(stageId: number, data: UserStage[]){
-    await prisma.$transaction(async (tr) => {
-      await tr.etapaUsuario.deleteMany({
-        where: {
-          etapaId: stageId
-        }
-      })
+  async associateUser(data: AssociateUserToStageDTO){
+    await prisma.etapaUsuario.create({
+      data: {
+        etapaId: data.stageId,
+        usuarioId: data.userId
+      }
+    })
+  }
 
-      await tr.etapaUsuario.createMany({ data })
+  async disassociateUser(data: AssociateUserToStageDTO){
+    await prisma.etapaUsuario.delete({
+      where: {
+        etapaId_usuarioId: {
+          etapaId: data.stageId,
+          usuarioId: data.userId
+        }
+      }
     })
   }
 }

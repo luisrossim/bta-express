@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UtilsService } from "@/utils/utils.service.js";
 import { StageService } from "@/services/stage.service.js";
-import { AssociateUsersToStageDTO } from "@/models/dtos/associate-user-to-stage.dto.js";
+import { AssociateUserToStageDTO } from "@/models/dtos/associate-user-to-stage.dto.js";
 
 export class StageController {
   private readonly stageService;
@@ -28,9 +28,16 @@ export class StageController {
   }
 
 
-  async associateUsers(req: Request, res: Response) {
-    const dto: AssociateUsersToStageDTO = req.body;
-    await this.stageService.associateUsers(dto.stageId, dto.usersId);
+  async associateUser(req: Request, res: Response) {
+    const dto: AssociateUserToStageDTO = req.body;
+    await this.stageService.associateUser(dto);
+    return res.status(200).send(); 
+  }
+
+
+  async disassociateUser(req: Request, res: Response) {
+    const dto: AssociateUserToStageDTO = req.body;
+    await this.stageService.disassociateUser(dto);
     return res.status(200).send(); 
   }
 

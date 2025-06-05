@@ -73,10 +73,10 @@ export class UserRepository {
     })
   }
 
-  async deactivate(id: number): Promise<void> {
+  async changeStatus(id: number, isAtivo: boolean): Promise<void> {
     await this.repo.update({
       where: { id },
-      data: { isAtivo: false }
+      data: { isAtivo }
     })
   }
 }

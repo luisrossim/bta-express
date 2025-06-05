@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-export const associateUsersToStageSchema = z.object({
+export const associateUserToStageSchema = z.object({
   stageId: z.number().positive(),
-  usersId: z.array(z.number())
+  userId: z.number().positive(),
 })
 
-export type AssociateUsersToStageDTO = z.infer<typeof associateUsersToStageSchema>
+export type AssociateUserToStageDTO = z.infer<typeof associateUserToStageSchema>

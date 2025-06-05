@@ -46,6 +46,12 @@ async function seed(){
       { id: 2, descricao: "Trifásico"}
     ]
   })
+
+  await prisma.etapaUsuario.createMany({
+    data: [
+      {etapaId: 1, usuarioId: 1}
+    ]
+  })
 }
 
 seed()

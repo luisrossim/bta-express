@@ -51,11 +51,11 @@ export class UserController {
   }
 
 
-  async softDelete(req: Request, res: Response) {
+  async changeStatus(req: Request, res: Response) {
     const { id } = req.params;
     
     const idNumber = UtilsService.parseParamToValidNumber(id);
-    await this.userService.deactivate(idNumber);
+    await this.userService.changeStatus(idNumber);
 
     return res.status(200).send();
   }

@@ -47,5 +47,5 @@ export class StageFactory {
 
 export interface AssociatedUsers {
   stageId: number
-  users: User[]
+  users: Partial<User>[]
 }

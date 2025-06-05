@@ -34,9 +34,9 @@ export class UserService {
   }
 
 
-  async deactivate(id: number){
-    await this.findById(id);
-    return await this.userRepository.deactivate(id);
+  async changeStatus(userId: number){
+    const user = await this.findById(userId);
+    return await this.userRepository.changeStatus(user.id, !user.isAtivo);
   }
 
 

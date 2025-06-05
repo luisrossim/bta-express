@@ -1,4 +1,5 @@
 import { NotFoundException } from "@/exceptions/not-found.js";
+import { AssociateUserToStageDTO } from "@/models/dtos/associate-user-to-stage.dto.js";
 import { UserStage } from "@/models/stage.js";
 import { StageRepository } from "@/repositories/stage.repository.js";
 
@@ -27,15 +28,14 @@ export class StageService {
   }
 
 
-  async associateUsers(stageId: number, usersId: number[]) {
-    await this.findById(stageId);
+  async associateUser(dto: AssociateUserToStageDTO) {
+    await this.findById(dto.stageId);
+    return await this.stageRepository.associateUser(dto);
+  }
 
-    const data: UserStage[] = usersId.map(userId => ({
-      etapaId: stageId,
-      usuarioId: userId
-    })) 
 
-    return await this.stageRepository.associateUsers(stageId, data);
+  async disassociateUser(dto: AssociateUserToStageDTO) {
+    return await this.stageRepository.disassociateUser(dto);
   }
 
 
