@@ -5,7 +5,6 @@ CREATE TABLE "clientes" (
     "cpf" TEXT NOT NULL,
     "telefone" TEXT NOT NULL,
     "endereco_id" INTEGER NOT NULL,
-    "is_ativo" BOOLEAN NOT NULL DEFAULT true,
     "atualizado_em" TIMESTAMP(3) NOT NULL,
     "criado_em" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -35,6 +34,7 @@ CREATE TABLE "usuarios" (
     "password" TEXT NOT NULL,
     "telefone" TEXT NOT NULL,
     "role_id" INTEGER NOT NULL,
+    "is_ativo" BOOLEAN NOT NULL DEFAULT true,
     "atualizado_em" TIMESTAMP(3) NOT NULL,
     "criado_em" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -52,10 +52,10 @@ CREATE TABLE "roles" (
 -- CreateTable
 CREATE TABLE "anexos" (
     "id" TEXT NOT NULL,
-    "historico_os_id" TEXT NOT NULL,
-    "tipo_anexo_id" INTEGER NOT NULL,
+    "ordem_servico_id" TEXT NOT NULL,
     "url" TEXT NOT NULL,
-    "descricao" TEXT,
+    "tipo" TEXT NOT NULL,
+    "descricao" TEXT NOT NULL,
     "criado_em" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "anexos_pkey" PRIMARY KEY ("id")
@@ -85,14 +85,6 @@ CREATE TABLE "ordem_servico" (
     "has_orcamento_banco" BOOLEAN NOT NULL,
     "has_projeto_plantio" BOOLEAN NOT NULL,
     "quantidade_setores" INTEGER,
-    "criado_em" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "ordem_servico_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "assistencias" (
-    "ordem_servico_id" TEXT NOT NULL,
     "problema" TEXT,
     "tipo_energia_id" INTEGER,
     "motobomba_id" INTEGER,
@@ -101,7 +93,7 @@ CREATE TABLE "assistencias" (
     "observacoes" TEXT,
     "criado_em" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "assistencias_pkey" PRIMARY KEY ("ordem_servico_id")
+    CONSTRAINT "ordem_servico_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -123,14 +115,6 @@ CREATE TABLE "atribuicoes" (
     "usuario_id" INTEGER NOT NULL,
 
     CONSTRAINT "atribuicoes_pkey" PRIMARY KEY ("historico_os_id","usuario_id")
-);
-
--- CreateTable
-CREATE TABLE "tipo_anexo" (
-    "id" SERIAL NOT NULL,
-    "descricao" TEXT NOT NULL,
-
-    CONSTRAINT "tipo_anexo_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -174,6 +158,12 @@ CREATE UNIQUE INDEX "usuarios_email_key" ON "usuarios"("email");
 -- CreateIndex
 CREATE UNIQUE INDEX "roles_descricao_key" ON "roles"("descricao");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "anexos_url_key" ON "anexos"("url");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "etapas_descricao_key" ON "etapas"("descricao");
+
 -- AddForeignKey
 ALTER TABLE "clientes" ADD CONSTRAINT "clientes_endereco_id_fkey" FOREIGN KEY ("endereco_id") REFERENCES "enderecos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -181,10 +171,7 @@ ALTER TABLE "clientes" ADD CONSTRAINT "clientes_endereco_id_fkey" FOREIGN KEY ("
 ALTER TABLE "usuarios" ADD CONSTRAINT "usuarios_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "anexos" ADD CONSTRAINT "anexos_historico_os_id_fkey" FOREIGN KEY ("historico_os_id") REFERENCES "historico_os"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "anexos" ADD CONSTRAINT "anexos_tipo_anexo_id_fkey" FOREIGN KEY ("tipo_anexo_id") REFERENCES "tipo_anexo"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "anexos" ADD CONSTRAINT "anexos_ordem_servico_id_fkey" FOREIGN KEY ("ordem_servico_id") REFERENCES "ordem_servico"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "etapa_usuario" ADD CONSTRAINT "etapa_usuario_etapa_id_fkey" FOREIGN KEY ("etapa_id") REFERENCES "etapas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -196,13 +183,10 @@ ALTER TABLE "etapa_usuario" ADD CONSTRAINT "etapa_usuario_usuario_id_fkey" FOREI
 ALTER TABLE "ordem_servico" ADD CONSTRAINT "ordem_servico_cliente_id_fkey" FOREIGN KEY ("cliente_id") REFERENCES "clientes"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "assistencias" ADD CONSTRAINT "assistencias_ordem_servico_id_fkey" FOREIGN KEY ("ordem_servico_id") REFERENCES "ordem_servico"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ordem_servico" ADD CONSTRAINT "ordem_servico_tipo_energia_id_fkey" FOREIGN KEY ("tipo_energia_id") REFERENCES "tipo_energia"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "assistencias" ADD CONSTRAINT "assistencias_tipo_energia_id_fkey" FOREIGN KEY ("tipo_energia_id") REFERENCES "tipo_energia"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "assistencias" ADD CONSTRAINT "assistencias_motobomba_id_fkey" FOREIGN KEY ("motobomba_id") REFERENCES "motobombas"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "ordem_servico" ADD CONSTRAINT "ordem_servico_motobomba_id_fkey" FOREIGN KEY ("motobomba_id") REFERENCES "motobombas"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "historico_os" ADD CONSTRAINT "historico_os_ordem_servico_id_fkey" FOREIGN KEY ("ordem_servico_id") REFERENCES "ordem_servico"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

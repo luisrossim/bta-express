@@ -9,13 +9,12 @@ export class ServiceOrderRepository {
   async create(data: CreateServiceOrderDTO): Promise<ServiceOrder> {
     const now = new Date();
 
-    const { etapa, cliente, assistencia, ...order } = data;
+    const { etapaId, ...info } = data;
 
     const res: ServiceOrder = await prisma.$transaction(async (tr) => {
       const ordemCriada = await tr.ordemServico.create({ 
         data: {
-          ...order,
-          clienteId: data.cliente.id,
+          ...info,
           criadoEm: now
         }
       })
@@ -23,19 +22,11 @@ export class ServiceOrderRepository {
       await tr.historicoOS.create({
         data: {
           ordemServicoId: ordemCriada.id,
-          etapaId: etapa.id,
+          etapaId: etapaId,
+          observacoes: "Ordem de serviço criada",
           criadoEm: now
         }
       })
-
-      if(assistencia && data.etapa.id === StageEnum.ASSISTENCIA){
-        await tr.assistencia.create({
-          data: {
-            ordemServicoId: ordemCriada.id,
-            ...assistencia
-          }
-        })
-      }
 
       return ordemCriada;
     })
@@ -76,7 +67,6 @@ export class ServiceOrderRepository {
           }
         },
         anexos: true,
-        assistencia: true,
         historicoOs: {
           orderBy: { 
             criadoEm: 'desc' 
@@ -86,7 +76,11 @@ export class ServiceOrderRepository {
               include: {
                 etapaUsuario: {
                   include: {
-                    usuario: true
+                    usuario: {
+                      omit: {
+                        password: true
+                      }
+                    }
                   },
                   omit: {
                     usuarioId: true
@@ -96,7 +90,11 @@ export class ServiceOrderRepository {
             },
             atribuicoes: {
               include: {
-                usuario: true
+                usuario: {
+                  omit: {
+                    password: true
+                  }
+                }
               },
               omit: {
                 usuarioId: true

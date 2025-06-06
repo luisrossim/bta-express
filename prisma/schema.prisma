@@ -100,24 +100,12 @@ model EtapaUsuario {
 }
 
 model OrdemServico {
-  id                String   @id @default(uuid())
-  clienteId         Int      @map("cliente_id")
-  hasAutomacao      Boolean  @map("has_automacao")
-  hasOrcamentoBanco Boolean  @map("has_orcamento_banco")
-  hasProjetoPlantio Boolean  @map("has_projeto_plantio")
-  quantidadeSetores Int?     @map("quantidade_setores")
-  criadoEm          DateTime @default(now()) @map("criado_em")
-
-  cliente     Cliente       @relation(fields: [clienteId], references: [id])
-  assistencia Assistencia?
-  historicoOs HistoricoOS[]
-  anexos      Anexo[]
-
-  @@map("ordem_servico")
-}
-
-model Assistencia {
-  ordemServicoId            String   @id @map("ordem_servico_id")
+  id                        String   @id @default(uuid())
+  clienteId                 Int      @map("cliente_id")
+  hasAutomacao              Boolean?  @map("has_automacao")
+  hasOrcamentoBanco         Boolean?  @map("has_orcamento_banco")
+  hasProjetoPlantio         Boolean?  @map("has_projeto_plantio")
+  quantidadeSetores         Int?     @map("quantidade_setores")
   problema                  String?
   tipoEnergiaId             Int?     @map("tipo_energia_id")
   motobombaId               Int?     @map("motobomba_id")
@@ -126,11 +114,13 @@ model Assistencia {
   observacoes               String?
   criadoEm                  DateTime @default(now()) @map("criado_em")
 
-  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [id])
-  tipoEnergia  TipoEnergia? @relation(fields: [tipoEnergiaId], references: [id])
-  motobomba    Motobomba?   @relation(fields: [motobombaId], references: [id])
+  cliente                   Cliente       @relation(fields: [clienteId], references: [id])
+  tipoEnergia               TipoEnergia?  @relation(fields: [tipoEnergiaId], references: [id])
+  motobomba                 Motobomba?    @relation(fields: [motobombaId], references: [id])
+  historicoOs               HistoricoOS[]
+  anexos                    Anexo[]
 
-  @@map("assistencias")
+  @@map("ordem_servico")
 }
 
 model HistoricoOS {
@@ -161,10 +151,10 @@ model Atribuicao {
 }
 
 model TipoEnergia {
-  id        Int    @id @default(autoincrement())
-  descricao String
+  id           Int    @id @default(autoincrement())
+  descricao    String
 
-  assistencias Assistencia[]
+  ordemServico OrdemServico[]
 
   @@map("tipo_energia")
 }
@@ -178,8 +168,8 @@ model Motobomba {
   isAtivo             Boolean  @default(true) @map("is_ativo")
   criadoEm            DateTime @default(now()) @map("criado_em")
 
-  marca        Marca         @relation(fields: [marcaId], references: [id])
-  assistencias Assistencia[]
+  marca               Marca         @relation(fields: [marcaId], references: [id])
+  ordemServico        OrdemServico[]
 
   @@map("motobombas")
 }

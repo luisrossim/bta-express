@@ -1,20 +1,18 @@
 import { z } from "zod";
-import { createAssistanceSchema } from "./create-assistance.dto.js";
 
 export const createServiceOrderSchema = z.object({
-  cliente: z.object({
-    id: z.number().positive(),
-    nome: z.string()
-  }),
-  etapa: z.object({
-    id: z.number().positive(),
-    descricao: z.string()
-  }),
-  hasAutomacao: z.boolean(),
-  hasOrcamentoBanco: z.boolean(),
-  hasProjetoPlantio: z.boolean(),
-  quantidadeSetores: z.number().optional().nullable(),
-  assistencia: createAssistanceSchema
+  clienteId: z.number().positive(),
+  etapaId: z.number().positive(),
+  hasAutomacao: z.boolean().optional().nullable(),
+  hasOrcamentoBanco: z.boolean().optional().nullable(),
+  hasProjetoPlantio: z.boolean().optional().nullable(),
+  quantidadeSetores: z.number().positive().optional().nullable(),
+  problema: z.string().optional().nullable(),
+  tipoEnergiaId: z.number().optional().nullable(),
+  motobombaId: z.number().optional().nullable(),
+  polegadasValvulasRegistro: z.number().optional().nullable(),
+  diametroAdutoraMestre: z.string().optional().nullable(),
+  observacoes: z.string().optional().nullable()
 })
 
 export type CreateServiceOrderDTO = z.infer<typeof createServiceOrderSchema>

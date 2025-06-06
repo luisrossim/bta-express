@@ -10,11 +10,11 @@ async function seed(){
   })
 
   await prisma.usuario.upsert({
-    where: { email: 'admin@bta.com.br' },
+    where: { email: 'bruno@bta.com.br' },
     update: {},
     create: {
-      nome: 'Admin',
-      email: 'admin@bta.com.br',
+      nome: 'Bruno',
+      email: 'bruno@bta.com.br',
       password: '$2a$12$nc5vxpwbZ6XghqJDk3qOFe5i5PtePZIb2aIEXx2b4DoPpIc2g5cQ6',
       telefone: '27999999999',
       role: {
