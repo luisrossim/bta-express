@@ -1,18 +1,12 @@
 import { NotFoundException } from "@/exceptions/not-found.js";
-import { CreateUserDTO } from "@/models/dtos/create-user.dto.js";
-import { User } from "@/models/user.js";
+import { CreateUserDTO, UserDTO } from "@/models/dtos/user.dto.js";
 import { UserRepository } from "@/repositories/user.repository.js";
 import { hashPassword } from "./security/bcrypt.service.js";
 import { EntityAlreadyExistsException } from "@/exceptions/entity-already-exists.js";
 
 
 export class UserService {
-  private readonly userRepository;
-
-
-  constructor() {
-    this.userRepository = new UserRepository();
-  }
+  constructor(private userRepository: UserRepository){}
 
 
   async create(dto: CreateUserDTO) {
@@ -29,9 +23,15 @@ export class UserService {
   }
   
 
-  async update(userId: number, data: Partial<User>) {
+  async update(userId: number, data: Partial<UserDTO>) {
     await this.findById(userId);
     return await this.userRepository.update(userId, data);
+  }
+
+
+  async changeStatus(userId: number){
+    const user = await this.findById(userId);
+    return await this.userRepository.changeStatus(user.id, !user.isAtivo);
   }
 
 

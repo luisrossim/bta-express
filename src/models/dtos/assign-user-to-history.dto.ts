@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-export const assignUserToHistorySchema = z.object({
+export const userHistoryAssignmentSchema = z.object({
   historyId: z.string().uuid(),
   userId: z.number().positive()
 })
 
-export type AssignUserToHistoryDTO = z.infer<typeof assignUserToHistorySchema>
+export type UserHistoryAssignmentDTO = z.infer<typeof userHistoryAssignmentSchema>

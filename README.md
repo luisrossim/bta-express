@@ -1,6 +1,8 @@
-### ORDEM DE SERVIÇO API
+### API para GERENCIAMENTO de ORDENS DE SERVIÇO
 
-API REST construída com **Express**, **Prisma** e **PostgreSQL**, projetada para o gerenciamento de **ordens de serviço**. Inclui infraestrura com **Docker** e **AWS EC2**, recursos de **autenticação**, **controle de acesso**, **upload de arquivos** com **AWS S3**, além de **monitoramento de logs** com **AWS CloudWatch/Better Stack (Logtail)**.
+*[CASO REAL]*
+
+API REST construída com **Express**, **Prisma** e **PostgreSQL**, projetada para o gerenciamento de **ordens de serviço**. Inclui infraestrura com **AWS RDS**, **AWS EC2**, **Docker** e recursos de **autenticação (JWT)**, **controle de acesso (Roles)**, **upload de arquivos** com **AWS S3**, além de **monitoramento de logs** com **AWS CloudWatch/Better Stack (Logtail)**.
 
 ---
 

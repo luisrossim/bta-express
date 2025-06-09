@@ -4,17 +4,14 @@ import { InvalidArgumentsException } from "@/exceptions/invalid-arguments.js";
 import { comparePassword } from "./security/bcrypt.service.js";
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "./security/jwt.service.js";
 
-export class AuthService {
-  private readonly userService;
+export class AuthService { 
+  constructor(private userService: UserService){}
 
-  constructor(){
-    this.userService = new UserService();
-  }
-
+  
   async authenticate(dto: AuthRequest){
     const user = await this.userService.findByEmail(dto.login);
 
-    if(!user){
+    if(!user || !user.isAtivo){
       throw new InvalidArgumentsException("Login não encontrado.")
     }
 
@@ -26,6 +23,7 @@ export class AuthService {
     
     const authResponse: AuthResponse = {
       login: user.email,
+      role: user.role.descricao,
       accessToken: generateAccessToken(user.email, user.role.descricao),
       refreshToken: generateRefreshToken(user.email, user.role.descricao)
     }
@@ -45,6 +43,7 @@ export class AuthService {
     
     const updatedAuthData: AuthResponse = {
       login: decoded.login,
+      role: decoded.role,
       accessToken: newAccessToken,
       refreshToken: refreshToken
     }

@@ -1,7 +1,7 @@
 import logger from "@/config/logger.js";
 import { Request, Response, NextFunction } from "express";
 
-export function authorizeRoles(allowedRoles: Array<"admin" | "tecnico" | "assistente">) {
+export function authorizeRoles(allowedRoles: Array<"Admin" | "Técnico" | "Assistente">) {
   return (req: Request, res: Response, next: NextFunction) => {
     const ip = req.ip?.replace(/^::ffff:/, '');
     const user = (req as any).user;

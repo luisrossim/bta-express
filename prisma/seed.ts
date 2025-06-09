@@ -10,12 +10,12 @@ async function seed(){
   })
 
   await prisma.usuario.upsert({
-    where: { email: 'admin@bta.com.br' },
+    where: { email: 'bruno@bta.com.br' },
     update: {},
     create: {
-      nome: 'System Admin',
-      email: 'admin@bta.com.br',
-      password: '$2a$12$zekcUVczRbHwHqEnY7YiKuHt9XnZKTK847QEcVnRUkrnxCMFDaTi6',
+      nome: 'Bruno',
+      email: 'bruno@bta.com.br',
+      password: '$2a$12$nc5vxpwbZ6XghqJDk3qOFe5i5PtePZIb2aIEXx2b4DoPpIc2g5cQ6', //admin123
       telefone: '27999999999',
       role: {
         connect: {
@@ -44,6 +44,12 @@ async function seed(){
     data: [
       { id: 1, descricao: "Monofásico" },
       { id: 2, descricao: "Trifásico"}
+    ]
+  })
+
+  await prisma.etapaUsuario.createMany({
+    data: [
+      {etapaId: 1, usuarioId: 1}
     ]
   })
 }

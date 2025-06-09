@@ -1,40 +1,33 @@
 import { prisma } from "@/config/database.js";
-import { CreateCustomer, Customer } from "@/models/customer.js";
+import { Customer } from "@/models/customer.js";
+import { CustomerDTO } from "@/models/dtos/customer.dto.js";
 
 export class CustomerRepository {
   private readonly repo = prisma.cliente;
 
-  async create(data: CreateCustomer): Promise<Customer> {
-    return await this.repo.create({ data })
-  }
-
-  async update(customerId: number, data: Partial<Customer>): Promise<Customer> {
-    return await this.repo.update({
-      where: { 
-        id: customerId
-      },
-      data
+  async create(customer: CustomerDTO): Promise<Customer> {
+    const {endereco, ...data} = customer;
+    return await this.repo.create({
+      data: {
+        ...data,
+        endereco: {
+          create: endereco
+        }
+      }
     })
   }
 
-  async activate(customerId: number): Promise<Customer> {
+  async update(customerId: number, customer: Partial<CustomerDTO>): Promise<Customer> {
+    const {endereco, ...data} = customer;
     return await this.repo.update({
       where: { 
         id: customerId
       },
       data: {
-        isAtivo: true 
-      }
-    })
-  }
-
-  async deactivate(customerId: number): Promise<Customer> {
-    return await this.repo.update({
-      where: { 
-        id: customerId
-      },
-      data: { 
-        isAtivo: false 
+        ...data,
+        endereco: {
+          update: endereco
+        }
       }
     })
   }

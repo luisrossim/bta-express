@@ -1,25 +1,19 @@
 import { EntityAlreadyExistsException } from "@/exceptions/entity-already-exists.js";
 import { NotFoundException } from "@/exceptions/not-found.js";
-import { Customer } from "@/models/customer.js";
-import { CreateCustomerDTO } from "@/models/dtos/create-customer.dto.js";
+import { CustomerDTO } from "@/models/dtos/customer.dto.js";
 import { CustomerRepository } from "@/repositories/customer.repository.js";
 
 export class CustomerService {
-  private readonly customerRepository;
+  constructor(private customerRepository: CustomerRepository){}
 
 
-  constructor() {
-    this.customerRepository = new CustomerRepository();
-  }
-
-
-  async create(customer: CreateCustomerDTO) {
+  async create(customer: CustomerDTO) {
     await this.ensureCustomerCpfIsUnique(customer.cpf);
     return await this.customerRepository.create(customer);
   }
 
 
-  async update(customerId: number, data: Partial<Customer>) {
+  async update(customerId: number, data: Partial<CustomerDTO>) {
     await this.findById(customerId);
     return await this.customerRepository.update(customerId, data);
   }

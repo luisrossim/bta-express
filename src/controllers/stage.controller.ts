@@ -1,15 +1,10 @@
 import { Request, Response } from "express";
 import { UtilsService } from "@/utils/utils.service.js";
 import { StageService } from "@/services/stage.service.js";
-import { AssociateUsersToStageDTO } from "@/models/dtos/associate-user-to-stage.dto.js";
+import { AssociatedDTO } from "@/models/dtos/associate-user-to-stage.dto.js";
 
 export class StageController {
-  private readonly stageService;
-
-
-  constructor(){
-    this.stageService = new StageService();
-  }
+  constructor(private stageService: StageService){}
 
 
   async findById(req: Request, res: Response) {
@@ -22,15 +17,22 @@ export class StageController {
   }
 
 
-  async findAssociatedUsers(req: Request, res: Response) {
-    const associated = await this.stageService.findAssociatedUsers();
+  async findAssociated(req: Request, res: Response) {
+    const associated = await this.stageService.findAssociated();
     return res.status(200).json(associated);
   }
 
 
-  async associateUsers(req: Request, res: Response) {
-    const dto: AssociateUsersToStageDTO = req.body;
-    await this.stageService.associateUsers(dto.stageId, dto.usersId);
+  async associate(req: Request, res: Response) {
+    const dto: AssociatedDTO = req.body;
+    await this.stageService.associate(dto);
+    return res.status(200).send(); 
+  }
+
+
+  async disassociate(req: Request, res: Response) {
+    const dto: AssociatedDTO = req.body;
+    await this.stageService.disassociate(dto);
     return res.status(200).send(); 
   }
 

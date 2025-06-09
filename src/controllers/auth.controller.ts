@@ -3,14 +3,14 @@ import { AuthService } from "@/services/auth.service.js";
 import { AuthRequest, AuthResponse } from "@/models/dtos/auth.dto.js";
 
 export class AuthController {
-  private readonly authService: AuthService;
+  private readonly authService;
   private readonly accessTokenMaxAge: number = 24 * 60 * 60 * 1000;
   private readonly refreshTokenMaxAge: number = 6 * 30 * 24 * 60 * 60 * 1000;
   private jwtCookieOptions: CookieOptions;
 
   
-  constructor() {
-    this.authService = new AuthService();
+  constructor(authService: AuthService) {
+    this.authService = authService;
     this.jwtCookieOptions = {
       httpOnly: true,
       secure: false,
@@ -35,7 +35,10 @@ export class AuthController {
       maxAge: this.refreshTokenMaxAge
     });
 
-    res.status(200).send();
+    res.status(200).json({
+      login: authResponse.login,
+      role: authResponse.role
+    });
   }
 
 
