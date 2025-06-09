@@ -4,12 +4,7 @@ import { StageService } from "@/services/stage.service.js";
 import { AssociatedDTO } from "@/models/dtos/associate-user-to-stage.dto.js";
 
 export class StageController {
-  private readonly stageService;
-
-
-  constructor(){
-    this.stageService = new StageService();
-  }
+  constructor(private stageService: StageService){}
 
 
   async findById(req: Request, res: Response) {

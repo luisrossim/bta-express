@@ -2,10 +2,10 @@ import { Router } from "express";
 import { validate } from "@/middlewares/validate-dto.middleware.js";
 import { userHistoryAssignmentSchema } from "@/models/dtos/assign-user-to-history.dto.js";
 import { asyncHandler } from "@/utils/async-handler.js";
-import { OrderHistoryController } from "@/controllers/order-history.controller.js";
+import { createOrderHistoryController } from "@/factories/order-history-factory.js";
 
 const router = Router();
-const orderHistoryController = new OrderHistoryController();
+const orderHistoryController = createOrderHistoryController()
 
 
 router.post(

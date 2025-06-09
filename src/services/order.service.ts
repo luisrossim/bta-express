@@ -9,14 +9,10 @@ import { AttachmentRepository } from "@/repositories/attachment.repository.js";
 import { OrderRepository } from "@/repositories/order.repository.js";
 
 export class OrderService {
-  private readonly orderRepository;
-  private readonly attachmentRepository;
-
-
-  constructor() {
-    this.orderRepository = new OrderRepository();
-    this.attachmentRepository = new AttachmentRepository();
-  }
+  constructor(
+    private orderRepository: OrderRepository,
+    private attachmentRepository: AttachmentRepository
+  ){}
 
 
   async create(ordem: CreateServiceOrderDTO) {

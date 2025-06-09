@@ -4,12 +4,7 @@ import { UtilsService } from "@/utils/utils.service.js";
 import { CustomerDTO } from "@/models/dtos/customer.dto.js";
 
 export class CustomerController {
-  private readonly customerService;
-
-
-  constructor(){
-    this.customerService = new CustomerService();
-  }
+  constructor(private customerService: CustomerService){}
 
 
   async create(req: Request, res: Response) {

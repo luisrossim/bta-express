@@ -1,16 +1,10 @@
 import { EntityAlreadyExistsException } from "@/exceptions/entity-already-exists.js";
 import { NotFoundException } from "@/exceptions/not-found.js";
-import { Customer } from "@/models/customer.js";
 import { CustomerDTO } from "@/models/dtos/customer.dto.js";
 import { CustomerRepository } from "@/repositories/customer.repository.js";
 
 export class CustomerService {
-  private readonly customerRepository;
-
-
-  constructor() {
-    this.customerRepository = new CustomerRepository();
-  }
+  constructor(private customerRepository: CustomerRepository){}
 
 
   async create(customer: CustomerDTO) {

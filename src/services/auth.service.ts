@@ -4,13 +4,10 @@ import { InvalidArgumentsException } from "@/exceptions/invalid-arguments.js";
 import { comparePassword } from "./security/bcrypt.service.js";
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "./security/jwt.service.js";
 
-export class AuthService {
-  private readonly userService;
+export class AuthService { 
+  constructor(private userService: UserService){}
 
-  constructor(){
-    this.userService = new UserService();
-  }
-
+  
   async authenticate(dto: AuthRequest){
     const user = await this.userService.findByEmail(dto.login);
 
