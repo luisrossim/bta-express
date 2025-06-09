@@ -1,5 +1,5 @@
 import { prisma } from "@/config/database.js";
-import { AssociateUserToStageDTO } from "@/models/dtos/associate-user-to-stage.dto.js";
+import { AssociatedDTO } from "@/models/dtos/associate-user-to-stage.dto.js";
 import { AssociatedUsers, Stage } from "@/models/stage.js";
 
 export class StageRepository {
@@ -56,7 +56,7 @@ export class StageRepository {
   }
 
 
-  async associateUser(data: AssociateUserToStageDTO){
+  async associate(data: AssociatedDTO){
     await prisma.etapaUsuario.create({
       data: {
         etapaId: data.stageId,
@@ -65,8 +65,19 @@ export class StageRepository {
     })
   }
 
-  async disassociateUser(data: AssociateUserToStageDTO){
+  async disassociate(data: AssociatedDTO){
     await prisma.etapaUsuario.delete({
+      where: {
+        etapaId_usuarioId: {
+          etapaId: data.stageId,
+          usuarioId: data.userId
+        }
+      }
+    })
+  }
+
+  async findAssociatedById(data: AssociatedDTO){
+    return await prisma.etapaUsuario.findUnique({
       where: {
         etapaId_usuarioId: {
           etapaId: data.stageId,

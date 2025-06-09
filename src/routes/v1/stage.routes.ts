@@ -2,7 +2,7 @@ import { StageController } from "@/controllers/stage.controller.js";
 import { authorizeRoles } from "@/middlewares/authorize-roles.middleware.js";
 import { JWTAuth } from "@/middlewares/jwt.middleware.js";
 import { validate } from "@/middlewares/validate-dto.middleware.js";
-import { associateUserToStageSchema } from "@/models/dtos/associate-user-to-stage.dto.js";
+import { associatedSchema } from "@/models/dtos/associate-user-to-stage.dto.js";
 import { asyncHandler } from "@/utils/async-handler.js";
 import { Router } from "express";
 
@@ -11,9 +11,9 @@ const stageController = new StageController();
 
 
 router.get(
-  '/vinculados',
+  '/associated',
   JWTAuth,
-  asyncHandler((req, res, next) => stageController.findAssociatedUsers(req, res))
+  asyncHandler((req, res, next) => stageController.findAssociated(req, res))
 )
 
 router.get(
@@ -29,19 +29,19 @@ router.get(
 ) 
 
 router.post(
-  '/vincular',
+  '/associate',
   JWTAuth,
   authorizeRoles(['Admin']),
-  validate(associateUserToStageSchema), 
-  asyncHandler((req, res, next) => stageController.associateUser(req, res))
+  validate(associatedSchema), 
+  asyncHandler((req, res, next) => stageController.associate(req, res))
 )
 
 router.post(
-  '/desvincular',
+  '/disassociate',
   JWTAuth,
   authorizeRoles(['Admin']),
-  validate(associateUserToStageSchema), 
-  asyncHandler((req, res, next) => stageController.disassociateUser(req, res))
+  validate(associatedSchema), 
+  asyncHandler((req, res, next) => stageController.disassociate(req, res))
 )
 
 export default router; 

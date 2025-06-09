@@ -1,20 +1,19 @@
 import { prisma } from "@/config/database.js";
-import { CreateServiceOrderDTO } from "@/models/dtos/create-service-order.dto.js";
-import { StageEnum } from "@/models/enums/stage.enum.js";
-import { ServiceOrder, ServiceOrderWithIncludes } from "@/models/service-order.js";
+import { CreateServiceOrderDTO } from "@/models/dtos/service-order.dto.js";
+import { ServiceOrder, ServiceOrderWithIncludes } from "@/models/order.js";
 
-export class ServiceOrderRepository {
+export class OrderRepository {
   private readonly repo = prisma.ordemServico;
 
   async create(data: CreateServiceOrderDTO): Promise<ServiceOrder> {
     const now = new Date();
 
-    const { etapaId, ...info } = data;
+    const { etapaId, clienteId } = data;
 
     const res: ServiceOrder = await prisma.$transaction(async (tr) => {
       const ordemCriada = await tr.ordemServico.create({ 
         data: {
-          ...info,
+          clienteId,
           criadoEm: now
         }
       })
@@ -22,7 +21,7 @@ export class ServiceOrderRepository {
       await tr.historicoOS.create({
         data: {
           ordemServicoId: ordemCriada.id,
-          etapaId: etapaId,
+          etapaId,
           observacoes: "Ordem de serviço criada",
           criadoEm: now
         }
@@ -47,7 +46,16 @@ export class ServiceOrderRepository {
           },
           take: 1,
           include: {
-            etapa: true
+            etapa: true,
+            atribuicoes: {
+              include: {
+                usuario: {
+                  omit: {
+                    password: true
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -55,18 +63,20 @@ export class ServiceOrderRepository {
   }
 
 
-  async findById(ordemId: string): Promise<ServiceOrderWithIncludes | null> {
+  async findById(orderId: string): Promise<Partial<ServiceOrderWithIncludes> | null> {
     return await this.repo.findUnique({
       where: { 
-        id: ordemId
+        id: orderId
       },
       include: { 
         cliente: {
           include: {
             endereco: true
+          },
+          omit: {
+            enderecoId: true
           }
         },
-        anexos: true,
         historicoOs: {
           orderBy: { 
             criadoEm: 'desc' 
@@ -81,9 +91,6 @@ export class ServiceOrderRepository {
                         password: true
                       }
                     }
-                  },
-                  omit: {
-                    usuarioId: true
                   }
                 }
               }
@@ -97,11 +104,20 @@ export class ServiceOrderRepository {
                 }
               },
               omit: {
+                historicoOsId: true,
                 usuarioId: true
               }
             }
+          },
+          omit: {
+            etapaId: true,
+            ordemServicoId: true
           }
-        }
+        },
+        anexos: true
+      },
+      omit: {
+        clienteId: true
       }
     })
   }

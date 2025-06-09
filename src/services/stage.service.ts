@@ -1,6 +1,6 @@
+import { EntityAlreadyExistsException } from "@/exceptions/entity-already-exists.js";
 import { NotFoundException } from "@/exceptions/not-found.js";
-import { AssociateUserToStageDTO } from "@/models/dtos/associate-user-to-stage.dto.js";
-import { UserStage } from "@/models/stage.js";
+import { AssociatedDTO } from "@/models/dtos/associate-user-to-stage.dto.js";
 import { StageRepository } from "@/repositories/stage.repository.js";
 
 export class StageService {
@@ -28,18 +28,18 @@ export class StageService {
   }
 
 
-  async associateUser(dto: AssociateUserToStageDTO) {
-    await this.findById(dto.stageId);
-    return await this.stageRepository.associateUser(dto);
+  async associate(dto: AssociatedDTO) {
+    await this.throwIfAssociated(dto);
+    return await this.stageRepository.associate(dto);
   }
 
 
-  async disassociateUser(dto: AssociateUserToStageDTO) {
-    return await this.stageRepository.disassociateUser(dto);
+  async disassociate(dto: AssociatedDTO) {
+    return await this.stageRepository.disassociate(dto);
   }
 
 
-  async findAssociatedUsers(){
+  async findAssociated(){
     const associated = await this.stageRepository.findAssociated();
 
     if(!associated){
@@ -47,5 +47,14 @@ export class StageService {
     }
 
     return associated;
+  }
+
+
+  async throwIfAssociated(dto: AssociatedDTO){
+    const associated = await this.stageRepository.findAssociatedById(dto);
+
+    if (associated) {
+      throw new EntityAlreadyExistsException("O usuário já está vinculado ao estado.")
+    }
   }
 }
