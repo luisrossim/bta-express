@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { CustomerController } from "@/controllers/customer.controller.js";
 import { validate } from "@/middlewares/validate-dto.middleware.js";
 import { customerSchema } from "@/models/dtos/customer.dto.js";
 import { asyncHandler } from "@/utils/async-handler.js";
 import { JWTAuth } from "@/middlewares/jwt.middleware.js";
+import { createCustomerController } from "@/factories/customer-factory.js";
 
 const router = Router();
-const customerController = new CustomerController();
+const customerController = createCustomerController();
 
 router.get(
   '/',

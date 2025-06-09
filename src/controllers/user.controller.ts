@@ -4,12 +4,7 @@ import { UserService } from "@/services/user.service.js";
 import { CreateUserDTO, UserDTO } from "@/models/dtos/user.dto.js";
 
 export class UserController {
-  private readonly userService;
-
-
-  constructor(){
-    this.userService = new UserService();
-  }
+  constructor(private userService: UserService){}
 
 
   async findById(req: Request, res: Response) {

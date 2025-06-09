@@ -4,12 +4,7 @@ import { AssociatedDTO } from "@/models/dtos/associate-user-to-stage.dto.js";
 import { StageRepository } from "@/repositories/stage.repository.js";
 
 export class StageService {
-  private readonly stageRepository;
-
-
-  constructor() {
-    this.stageRepository = new StageRepository();
-  }
+  constructor(private stageRepository: StageRepository){}
 
 
   async findAll(){

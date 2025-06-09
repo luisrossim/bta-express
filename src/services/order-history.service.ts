@@ -7,12 +7,7 @@ import { EntityAlreadyExistsException } from "@/exceptions/entity-already-exists
 
 
 export class OrderHistoryService {
-  private readonly orderHistoryRepository;
-
-
-  constructor() {
-    this.orderHistoryRepository = new OrderHistoryRepository();
-  }
+  constructor(private orderHistoryRepository: OrderHistoryRepository){}
 
 
   async completeStage(historyId: string){

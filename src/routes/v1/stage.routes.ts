@@ -1,4 +1,4 @@
-import { StageController } from "@/controllers/stage.controller.js";
+import { createStageController } from "@/factories/stage-factory.js";
 import { authorizeRoles } from "@/middlewares/authorize-roles.middleware.js";
 import { JWTAuth } from "@/middlewares/jwt.middleware.js";
 import { validate } from "@/middlewares/validate-dto.middleware.js";
@@ -7,7 +7,7 @@ import { asyncHandler } from "@/utils/async-handler.js";
 import { Router } from "express";
 
 const router = Router();
-const stageController = new StageController();
+const stageController = createStageController()
 
 
 router.get(

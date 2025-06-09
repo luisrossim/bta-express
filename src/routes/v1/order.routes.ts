@@ -5,12 +5,12 @@ import { createServiceOrderSchema } from "@/models/dtos/service-order.dto.js";
 import { asyncHandler } from "@/utils/async-handler.js";
 import { requestLimiter } from "@/middlewares/rate-limit.middleware.js";
 import { JWTAuth } from "@/middlewares/jwt.middleware.js";
-import { OrderController } from "@/controllers/order.controller.js";
+import { createOrderController } from "@/factories/order-factory.js";
 
 const router = Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage })
-const orderController = new OrderController();
+const orderController = createOrderController()
 
 
 router.get(

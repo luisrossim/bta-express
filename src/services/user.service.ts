@@ -6,12 +6,7 @@ import { EntityAlreadyExistsException } from "@/exceptions/entity-already-exists
 
 
 export class UserService {
-  private readonly userRepository;
-
-
-  constructor() {
-    this.userRepository = new UserRepository();
-  }
+  constructor(private userRepository: UserRepository){}
 
 
   async create(dto: CreateUserDTO) {

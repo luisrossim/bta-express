@@ -4,11 +4,7 @@ import { ServiceOrderWithIncludes } from "@/models/order.js";
 import { OrderService } from "@/services/order.service.js";
 
 export class OrderController {
-  private readonly orderService;
-
-  constructor(){
-    this.orderService = new OrderService();
-  }
+  constructor(private orderService: OrderService){}
 
 
   async create(req: Request, res: Response) {
