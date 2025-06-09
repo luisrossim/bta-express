@@ -15,7 +15,7 @@ async function seed(){
     create: {
       nome: 'Bruno',
       email: 'bruno@bta.com.br',
-      password: '$2a$12$nc5vxpwbZ6XghqJDk3qOFe5i5PtePZIb2aIEXx2b4DoPpIc2g5cQ6',
+      password: '$2a$12$nc5vxpwbZ6XghqJDk3qOFe5i5PtePZIb2aIEXx2b4DoPpIc2g5cQ6', //admin123
       telefone: '27999999999',
       role: {
         connect: {
