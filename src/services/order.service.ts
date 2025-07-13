@@ -7,6 +7,7 @@ import { CustomError } from "@/exceptions/custom-error.js";
 import { AttachmentWithSignedUrl, CreateAttach } from "@/models/attachment.js";
 import { AttachmentRepository } from "@/repositories/attachment.repository.js";
 import { OrderRepository } from "@/repositories/order.repository.js";
+import { OrderFilters } from "@/models/dtos/order-filters.js";
 
 export class OrderService {
   constructor(
@@ -31,8 +32,8 @@ export class OrderService {
   }
 
 
-  async findAll(){
-    return await this.orderRepository.findAll();
+  async findAll(filters: OrderFilters){
+    return await this.orderRepository.findAll(filters);
   }
 
 

@@ -1,4 +1,5 @@
 import { prisma } from "@/config/database.js";
+import { OrderFilters } from "@/models/dtos/order-filters.js";
 import { CreateServiceOrderDTO } from "@/models/dtos/service-order.dto.js";
 import { ServiceOrder, ServiceOrderWithIncludes } from "@/models/order.js";
 
@@ -33,8 +34,8 @@ export class OrderRepository {
   }
 
 
-  async findAll(): Promise<ServiceOrderWithIncludes[]> {
-    return await this.repo.findMany({
+  async findAll(filters: OrderFilters): Promise<ServiceOrderWithIncludes[]> {
+    const orders = await this.repo.findMany({
       orderBy: { 
         criadoEm: 'desc'
       },
@@ -48,6 +49,10 @@ export class OrderRepository {
           include: {
             etapa: true,
             atribuicoes: {
+              omit: {
+                historicoOsId: true,
+                usuarioId: true
+              },
               include: {
                 usuario: {
                   omit: {
@@ -60,6 +65,24 @@ export class OrderRepository {
         }
       }
     })
+
+    return orders.filter(order => {
+      const historico = order.historicoOs[0];
+
+      if (filters.status === "andamento" && historico.concluidoEm !== null) return false;
+      if (filters.status === "concluida" && historico.concluidoEm === null) return false;
+
+      if (filters.stageId && filters.stageId > 0) {
+        if (historico.etapa?.id !== filters.stageId) return false;
+      }
+
+      if (filters.userId && filters.userId > 0) {
+        const hasUser = historico.atribuicoes.some(a => a.usuario.id === filters.userId);
+        if (!hasUser) return false;
+      }
+
+      return true;
+    });
   }
 
 

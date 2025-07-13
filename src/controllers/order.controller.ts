@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { CreateServiceOrderDTO } from "@/models/dtos/service-order.dto.js";
 import { ServiceOrderWithIncludes } from "@/models/order.js";
 import { OrderService } from "@/services/order.service.js";
+import { OrderFilters, orderFiltersSchema } from "@/models/dtos/order-filters.js";
 
 export class OrderController {
   constructor(private orderService: OrderService){}
@@ -39,7 +40,11 @@ export class OrderController {
 
   
   async findAll(req: Request, res: Response) {
-    const orders = await this.orderService.findAll();
+    const filters: OrderFilters = req.query;
+
+    const parsedFilters = orderFiltersSchema.parse(filters);
+
+    const orders = await this.orderService.findAll(parsedFilters);
 
     if (!orders || orders.length === 0) {
       return res.status(204).send();
