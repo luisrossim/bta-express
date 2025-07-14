@@ -46,7 +46,19 @@ export class CustomerRepository {
         id: customerId
       },
       include: {
-        ordemServico: true,
+        ordemServico: {
+          include: {
+            historicoOs: {
+              orderBy: {
+                criadoEm: "desc"
+              },
+              take: 1,
+              include: {
+                etapa: true
+              }
+            }
+          }
+        },
         endereco: true
       }
     })
