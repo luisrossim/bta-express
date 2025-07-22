@@ -1,6 +1,6 @@
 import { InvalidArgumentsException } from "@/exceptions/invalid-arguments.js";
 import { NotFoundException } from "@/exceptions/not-found.js";
-import { CreateServiceOrderDTO } from "@/models/dtos/service-order.dto.js";
+import { Assistance, CreateServiceOrderDTO, Measurement } from "@/models/dtos/order.dto.js";
 import { bucketName, client, getSignedUrl } from "@/config/s3client.js";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { CustomError } from "@/exceptions/custom-error.js";
@@ -34,6 +34,18 @@ export class OrderService {
 
   async findAll(filters: OrderFilters){
     return await this.orderRepository.findAll(filters);
+  }
+
+
+  async measurement(orderId: string, dto: Measurement){
+    await this.findById(orderId);
+    return await this.orderRepository.measurement(orderId, dto);
+  }
+
+
+  async assistance(orderId: string, dto: Assistance){
+    await this.findById(orderId);
+    return await this.orderRepository.assistance(orderId, dto);
   }
 
 

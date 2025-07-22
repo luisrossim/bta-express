@@ -52,6 +52,7 @@ model Usuario {
   role          Role           @relation(fields: [roleId], references: [id])
   etapaUsuario  EtapaUsuario[]
   atribuicoes   Atribuicao[]
+  conclusoes HistoricoOS[] @relation("ConcluidoPor")
 
   @@map("usuarios")
 }
@@ -128,12 +129,14 @@ model HistoricoOS {
   ordemServicoId String    @map("ordem_servico_id")
   etapaId        Int       @map("etapa_id")
   observacoes    String?
+  concluidoPorId Int?      @map("concluido_por")
   concluidoEm    DateTime? @map("concluido_em")
   atualizadoEm   DateTime? @updatedAt @map("atualizado_em")
   criadoEm       DateTime  @default(now()) @map("criado_em")
 
   ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [id])
   etapa        Etapa        @relation(fields: [etapaId], references: [id])
+  concluidoPor   Usuario?  @relation("ConcluidoPor", fields: [concluidoPorId], references: [id])
   atribuicoes  Atribuicao[]
 
   @@map("historico_os")

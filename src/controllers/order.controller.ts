@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateServiceOrderDTO } from "@/models/dtos/service-order.dto.js";
+import { CreateServiceOrderDTO } from "@/models/dtos/order.dto.js";
 import { ServiceOrderWithIncludes } from "@/models/order.js";
 import { OrderService } from "@/services/order.service.js";
 import { OrderFilters, orderFiltersSchema } from "@/models/dtos/order-filters.js";
@@ -20,10 +20,24 @@ export class OrderController {
     const file = req.file;
 
     await this.orderService.attachFile(id, file);
-
     return res.status(200).send();
   }
 
+  async measurement(req: Request, res: Response) {
+    const { id } = req.params;
+    const dto = req.body;
+
+    await this.orderService.measurement(id, dto);
+    return res.status(200).send();
+  }
+
+  async assistance(req: Request, res: Response) {
+    const { id } = req.params;
+    const dto = req.body;
+
+    await this.orderService.assistance(id, dto);
+    return res.status(200).send();
+  }
 
   async getSignedUrlToAttachment(req: Request, res: Response){
     const { attachmentId } = req.params;

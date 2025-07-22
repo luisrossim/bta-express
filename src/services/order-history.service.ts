@@ -4,15 +4,27 @@ import { UserHistoryAssignmentDTO } from "@/models/dtos/assign-user-to-history.d
 import { StageFactory } from "@/models/stage.js";
 import { OrderHistoryRepository } from "@/repositories/order-history.repository.js";
 import { EntityAlreadyExistsException } from "@/exceptions/entity-already-exists.js";
+import { JwtPayload } from "jsonwebtoken";
+import { UserService } from "./user.service.js";
+import { CommentsHistoryDTO } from "@/models/dtos/comments-history.dto.js";
+import { OrderHistoryWithIncludes } from "@/models/order-history.js";
+import { UserWithIncludes } from "@/models/user.js";
 
 
 export class OrderHistoryService {
-  constructor(private orderHistoryRepository: OrderHistoryRepository){}
+  constructor(
+    private orderHistoryRepository: OrderHistoryRepository,
+    private userService: UserService
+  ){}
 
 
-  async completeStage(historyId: string){
-    await this.throwIfHistoryStageComplete(historyId);
-    return await this.orderHistoryRepository.completeStage(historyId);
+  async completeStage(historyId: string, requestUser: JwtPayload){
+    const history = await this.throwIfHistoryStageComplete(historyId);
+    const user = await this.userService.findByEmail(requestUser.login);
+
+    this.throwIfAssignmentIsInvalid(history, user);
+
+    return await this.orderHistoryRepository.completeStage(historyId, user);
   }
 
   
@@ -42,6 +54,15 @@ export class OrderHistoryService {
     return await this.orderHistoryRepository.removeUser(dto);
   }
 
+  async comments(historyId: string, dto: CommentsHistoryDTO, requestUser: JwtPayload) {
+    const history = await this.throwIfHistoryStageComplete(historyId);
+    const user = await this.userService.findByEmail(requestUser.login);
+
+    this.throwIfAssignmentIsInvalid(history, user);
+
+    return await this.orderHistoryRepository.comments(historyId, dto.observacoes);
+  }
+
 
   async findById(historyId: string){
     const history = await this.orderHistoryRepository.findById(historyId);
@@ -68,6 +89,20 @@ export class OrderHistoryService {
 
     if (history.concluidoEm) {
       throw new InvalidArgumentsException(`A etapa já foi concluída e não pode ser alterada.`)
+    }
+
+    return history;
+  }
+
+  throwIfAssignmentIsInvalid(history: OrderHistoryWithIncludes, userRequest: UserWithIncludes) {
+    const isAssigned = history.atribuicoes?.some(
+      attr => attr.usuario?.id === userRequest.id
+    );
+
+    const isAdmin = userRequest.role.descricao === 'Admin';
+
+    if (!isAssigned && !isAdmin) {
+      throw new InvalidArgumentsException('Somente técnicos atribuídos ou administradores podem realizar essa ação.');
     }
   }
 }

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import multer from 'multer'; 
 import { validate } from "@/middlewares/validate-dto.middleware.js";
-import { createServiceOrderSchema } from "@/models/dtos/service-order.dto.js";
+import { assistanceSchema, createOrderSchema, measurementSchema } from "@/models/dtos/order.dto.js";
 import { asyncHandler } from "@/utils/async-handler.js";
 import { requestLimiter } from "@/middlewares/rate-limit.middleware.js";
 import { JWTAuth } from "@/middlewares/jwt.middleware.js";
@@ -34,8 +34,22 @@ router.get(
 router.post(
   '/',
   JWTAuth,
-  validate(createServiceOrderSchema),
+  validate(createOrderSchema),
   asyncHandler((req, res, next) => orderController.create(req, res))
+)
+
+router.patch(
+  '/:id/measurement',
+  JWTAuth,
+  validate(measurementSchema),
+  asyncHandler((req, res, next) => orderController.measurement(req, res))
+)
+
+router.patch(
+  '/:id/assistance',
+  JWTAuth,
+  validate(assistanceSchema),
+  asyncHandler((req, res, next) => orderController.assistance(req, res))
 )
 
 router.post(

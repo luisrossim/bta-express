@@ -1,18 +1,18 @@
 import { z } from "zod";
 
-export const createServiceOrderSchema = z.object({
+export const createOrderSchema = z.object({
   clienteId: z.number().positive(),
   etapaId: z.number().positive()
 })
 
-export const measurementFormSchema = z.object({
+export const measurementSchema = z.object({
   hasAutomacao: z.boolean(),
   hasOrcamentoBanco: z.boolean(),
   hasProjetoPlantio: z.boolean(),
   quantidadeSetores: z.number()
 })
 
-export const assistanceFormSchema = z.object({
+export const assistanceSchema = z.object({
   problema: z.string(),
   tipoEnergiaId: z.number().optional().nullable(),
   motobombaId: z.number().optional().nullable(),
@@ -21,6 +21,6 @@ export const assistanceFormSchema = z.object({
   observacoes: z.string().optional().nullable()
 })
 
-export type CreateServiceOrderDTO = z.infer<typeof createServiceOrderSchema>
-export type MeasurementForm = z.infer<typeof measurementFormSchema>
-export type AssistanceForm = z.infer<typeof assistanceFormSchema>
+export type CreateServiceOrderDTO = z.infer<typeof createOrderSchema>
+export type Measurement = z.infer<typeof measurementSchema>
+export type Assistance = z.infer<typeof assistanceSchema>

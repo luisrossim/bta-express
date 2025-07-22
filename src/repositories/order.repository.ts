@@ -1,6 +1,6 @@
 import { prisma } from "@/config/database.js";
 import { OrderFilters } from "@/models/dtos/order-filters.js";
-import { CreateServiceOrderDTO } from "@/models/dtos/service-order.dto.js";
+import { Assistance, CreateServiceOrderDTO, Measurement } from "@/models/dtos/order.dto.js";
 import { ServiceOrder, ServiceOrderWithIncludes } from "@/models/order.js";
 
 export class OrderRepository {
@@ -31,6 +31,34 @@ export class OrderRepository {
       return ordemCriada;
     })
     return res;
+  }
+
+
+  async measurement(id: string, values: Measurement) {
+    await this.repo.update({
+      where: { id },
+      data: {
+        hasAutomacao: values.hasAutomacao,
+        hasProjetoPlantio: values.hasProjetoPlantio,
+        hasOrcamentoBanco: values.hasOrcamentoBanco,
+        quantidadeSetores: values.quantidadeSetores
+      }
+    })
+  }
+
+
+  async assistance(id: string, values: Assistance) {
+    await this.repo.update({
+      where: { id },
+      data: {
+        problema: values.problema,
+        tipoEnergiaId: values.tipoEnergiaId,
+        motobombaId: values.motobombaId,
+        polegadasValvulasRegistro: values.polegadasValvulasRegistro,
+        diametroAdutoraMestre: values.diametroAdutoraMestre,
+        observacoes: values.observacoes
+      }
+    })
   }
 
 
@@ -129,6 +157,11 @@ export class OrderRepository {
               omit: {
                 historicoOsId: true,
                 usuarioId: true
+              }
+            },
+            concluidoPor: {
+              omit: {
+                password: true
               }
             }
           },
