@@ -8,7 +8,7 @@ import { errorHandler } from '@/middlewares/error-handler.middleware.js';
 import { generalRateLimiter } from './middlewares/rate-limit.middleware.js';
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3333;
 
 app.set('trust proxy', 1);
 
