@@ -1,17 +1,23 @@
 import { InvalidArgumentsException } from "@/exceptions/invalid-arguments.js";
 import { NotFoundException } from "@/exceptions/not-found.js";
-import { CreateServiceOrderDTO } from "@/models/dtos/service-order.dto.js";
+import { Assistance, CreateServiceOrderDTO, Measurement } from "@/models/dtos/order.dto.js";
 import { bucketName, client, getSignedUrl } from "@/config/s3client.js";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { CustomError } from "@/exceptions/custom-error.js";
 import { AttachmentWithSignedUrl, CreateAttach } from "@/models/attachment.js";
 import { AttachmentRepository } from "@/repositories/attachment.repository.js";
 import { OrderRepository } from "@/repositories/order.repository.js";
+import { OrderFilters } from "@/models/dtos/order-filters.js";
+import { JwtPayload } from "jsonwebtoken";
+import { UserWithIncludes } from "@/models/user.js";
+import { AtribuicaoComUsuario } from "@/models/order-history.js";
+import { UserService } from "./user.service.js";
 
 export class OrderService {
   constructor(
     private orderRepository: OrderRepository,
-    private attachmentRepository: AttachmentRepository
+    private attachmentRepository: AttachmentRepository,
+    private userService: UserService
   ){}
 
 
@@ -31,12 +37,29 @@ export class OrderService {
   }
 
 
-  async findAll(){
-    return await this.orderRepository.findAll();
+  async findAll(filters: OrderFilters){
+    return await this.orderRepository.findAll(filters);
   }
 
 
-  async attachFile(id: string, file: any){
+  async measurement(orderId: string, dto: Measurement){
+    await this.findById(orderId);
+    return await this.orderRepository.measurement(orderId, dto);
+  }
+
+
+  async assistance(orderId: string, dto: Assistance){
+    await this.findById(orderId);
+    return await this.orderRepository.assistance(orderId, dto);
+  }
+
+
+  async attachFile(orderId: string, file: any, requestUser: JwtPayload){
+    const atribuicoes = await this.orderRepository.findLatestHistoryUsersByOrderId(orderId);
+    const user = await this.userService.findByEmail(requestUser.login);
+
+    this.throwIfAssignmentIsInvalid(atribuicoes , user);
+
     if (!this.fileTypeIsValid(file)){
       throw new InvalidArgumentsException("Apenas arquivos .jpg, .png ou .pdf são permitidos.");
     }
@@ -63,7 +86,7 @@ export class OrderService {
     }
 
     const attach: CreateAttach = {
-      ordemServicoId: id,
+      ordemServicoId: orderId,
       url: randomImageKey,
       tipo: file.mimetype,
       descricao: file.originalname,
@@ -91,6 +114,19 @@ export class OrderService {
     return {
       ...attachment,
       url_temporaria: signedUrl
+    }
+  }
+
+
+  throwIfAssignmentIsInvalid(atribuicoes: AtribuicaoComUsuario[], userRequest: UserWithIncludes) {
+    const isAssigned = atribuicoes.some(
+      attr => attr.usuario?.id === userRequest.id
+    );
+
+    const isAdmin = userRequest.role.descricao === 'Admin';
+
+    if (!isAssigned && !isAdmin) {
+      throw new InvalidArgumentsException('Somente atribuídos ou administradores podem realizar essa ação.');
     }
   }
 

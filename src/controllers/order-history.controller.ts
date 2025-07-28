@@ -1,13 +1,17 @@
 import { Request, Response } from "express";
 import { UserHistoryAssignmentDTO } from "@/models/dtos/assign-user-to-history.dto.js";
 import { OrderHistoryService } from "@/services/order-history.service.js";
+import { JwtPayload } from "jsonwebtoken";
+import { CommentsHistoryDTO } from "@/models/dtos/comments-history.dto.js";
 
 export class OrderHistoryController {
   constructor(private orderHistoryService: OrderHistoryService){}
 
   async completeStage(req: Request, res: Response) {
     const { historyId } = req.params;
-    await this.orderHistoryService.completeStage(historyId);
+    const requestUser: JwtPayload = (req as any).user;
+
+    await this.orderHistoryService.completeStage(historyId, requestUser);
     return res.status(200).send();
   }
 
@@ -29,6 +33,16 @@ export class OrderHistoryController {
   async removeUser(req: Request, res: Response) {
     const dto: UserHistoryAssignmentDTO = req.body;
     await this.orderHistoryService.removeUser(dto);
+    return res.status(200).send();
+  }
+
+
+  async commentsStage(req: Request, res: Response) {
+    const { historyId } = req.params;
+    const dto: CommentsHistoryDTO = req.body;
+    const requestUser: JwtPayload = (req as any).user;
+    
+    await this.orderHistoryService.comments(historyId, dto, requestUser);
     return res.status(200).send();
   }
 }

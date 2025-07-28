@@ -26,7 +26,9 @@ export class UserRepository {
     return await this.repo.update({
       where: { id },
       data: {
-        ...user,
+        nome: user.nome,
+        email: user.email,
+        telefone: user.telefone,
         role: {
           connect: {
             id: role?.id

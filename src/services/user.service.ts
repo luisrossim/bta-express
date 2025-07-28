@@ -3,6 +3,7 @@ import { CreateUserDTO, UserDTO } from "@/models/dtos/user.dto.js";
 import { UserRepository } from "@/repositories/user.repository.js";
 import { hashPassword } from "./security/bcrypt.service.js";
 import { EntityAlreadyExistsException } from "@/exceptions/entity-already-exists.js";
+import { UserWithIncludes } from "@/models/user.js";
 
 
 export class UserService {
@@ -52,6 +53,12 @@ export class UserService {
 
 
   async findByEmail(email: string){
-    return await this.userRepository.findByEmail(email);
+    const user = await this.userRepository.findByEmail(email);
+
+    if(!user){
+      throw new NotFoundException('Usuário não encontrado.')
+    }
+
+    return user;
   }
 }

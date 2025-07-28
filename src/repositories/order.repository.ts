@@ -1,5 +1,7 @@
 import { prisma } from "@/config/database.js";
-import { CreateServiceOrderDTO } from "@/models/dtos/service-order.dto.js";
+import { OrderFilters } from "@/models/dtos/order-filters.js";
+import { Assistance, CreateServiceOrderDTO, Measurement } from "@/models/dtos/order.dto.js";
+import { AtribuicaoComUsuario } from "@/models/order-history.js";
 import { ServiceOrder, ServiceOrderWithIncludes } from "@/models/order.js";
 
 export class OrderRepository {
@@ -33,8 +35,36 @@ export class OrderRepository {
   }
 
 
-  async findAll(): Promise<ServiceOrderWithIncludes[]> {
-    return await this.repo.findMany({
+  async measurement(id: string, values: Measurement) {
+    await this.repo.update({
+      where: { id },
+      data: {
+        hasAutomacao: values.hasAutomacao,
+        hasProjetoPlantio: values.hasProjetoPlantio,
+        hasOrcamentoBanco: values.hasOrcamentoBanco,
+        quantidadeSetores: values.quantidadeSetores
+      }
+    })
+  }
+
+
+  async assistance(id: string, values: Assistance) {
+    await this.repo.update({
+      where: { id },
+      data: {
+        problema: values.problema,
+        tipoEnergiaId: values.tipoEnergiaId,
+        motobombaId: values.motobombaId,
+        polegadasValvulasRegistro: values.polegadasValvulasRegistro,
+        diametroAdutoraMestre: values.diametroAdutoraMestre,
+        observacoes: values.observacoes
+      }
+    })
+  }
+
+
+  async findAll(filters: OrderFilters): Promise<ServiceOrderWithIncludes[]> {
+    const orders = await this.repo.findMany({
       orderBy: { 
         criadoEm: 'desc'
       },
@@ -48,6 +78,10 @@ export class OrderRepository {
           include: {
             etapa: true,
             atribuicoes: {
+              omit: {
+                historicoOsId: true,
+                usuarioId: true
+              },
               include: {
                 usuario: {
                   omit: {
@@ -60,6 +94,24 @@ export class OrderRepository {
         }
       }
     })
+
+    return orders.filter(order => {
+      const historico = order.historicoOs[0];
+
+      if (filters.status === "andamento" && historico.concluidoEm !== null) return false;
+      if (filters.status === "concluida" && historico.concluidoEm === null) return false;
+
+      if (filters.stageId && filters.stageId > 0) {
+        if (historico.etapa?.id !== filters.stageId) return false;
+      }
+
+      if (filters.userId && filters.userId > 0) {
+        const hasUser = historico.atribuicoes.some(a => a.usuario.id === filters.userId);
+        if (!hasUser) return false;
+      }
+
+      return true;
+    });
   }
 
 
@@ -107,6 +159,11 @@ export class OrderRepository {
                 historicoOsId: true,
                 usuarioId: true
               }
+            },
+            concluidoPor: {
+              omit: {
+                password: true
+              }
             }
           },
           omit: {
@@ -120,5 +177,26 @@ export class OrderRepository {
         clienteId: true
       }
     })
+  }
+
+
+  async findLatestHistoryUsersByOrderId(orderId: string): Promise<AtribuicaoComUsuario[]> {
+    const historico = await prisma.historicoOS.findFirst({
+      where: {
+        ordemServicoId: orderId
+      },
+      orderBy: {
+        criadoEm: 'desc'
+      },
+      include: {
+        atribuicoes: {
+          include: {
+            usuario: true
+          }
+        }
+      }
+    });
+
+    return historico?.atribuicoes ?? [];
   }
 }

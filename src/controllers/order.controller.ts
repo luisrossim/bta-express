@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
-import { CreateServiceOrderDTO } from "@/models/dtos/service-order.dto.js";
+import { CreateServiceOrderDTO } from "@/models/dtos/order.dto.js";
 import { ServiceOrderWithIncludes } from "@/models/order.js";
 import { OrderService } from "@/services/order.service.js";
+import { OrderFilters, orderFiltersSchema } from "@/models/dtos/order-filters.js";
+import { JwtPayload } from "jsonwebtoken";
 
 export class OrderController {
   constructor(private orderService: OrderService){}
@@ -17,12 +19,27 @@ export class OrderController {
   async attachFile(req: Request, res: Response) {
     const { id } = req.params;
     const file = req.file;
+    const requestUser: JwtPayload = (req as any).user;
 
-    await this.orderService.attachFile(id, file);
-
+    await this.orderService.attachFile(id, file, requestUser);
     return res.status(200).send();
   }
 
+  async measurement(req: Request, res: Response) {
+    const { id } = req.params;
+    const dto = req.body;
+
+    await this.orderService.measurement(id, dto);
+    return res.status(200).send();
+  }
+
+  async assistance(req: Request, res: Response) {
+    const { id } = req.params;
+    const dto = req.body;
+
+    await this.orderService.assistance(id, dto);
+    return res.status(200).send();
+  }
 
   async getSignedUrlToAttachment(req: Request, res: Response){
     const { attachmentId } = req.params;
@@ -39,7 +56,11 @@ export class OrderController {
 
   
   async findAll(req: Request, res: Response) {
-    const orders = await this.orderService.findAll();
+    const filters: OrderFilters = req.query;
+
+    const parsedFilters = orderFiltersSchema.parse(filters);
+
+    const orders = await this.orderService.findAll(parsedFilters);
 
     if (!orders || orders.length === 0) {
       return res.status(204).send();

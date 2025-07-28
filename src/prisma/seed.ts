@@ -6,7 +6,8 @@ async function seed(){
       { id: 1, descricao: 'Admin'},
       { id: 2, descricao: 'Técnico'},
       { id: 3, descricao: 'Assistente'}
-    ]
+    ],
+    skipDuplicates: true
   })
 
   await prisma.usuario.upsert({
@@ -15,7 +16,7 @@ async function seed(){
     create: {
       nome: 'Bruno',
       email: 'bruno@bta.com.br',
-      password: '$2a$12$nc5vxpwbZ6XghqJDk3qOFe5i5PtePZIb2aIEXx2b4DoPpIc2g5cQ6', //admin123
+      password: '$2a$12$nc5vxpwbZ6XghqJDk3qOFe5i5PtePZIb2aIEXx2b4DoPpIc2g5cQ6',
       telefone: '27999999999',
       role: {
         connect: {
@@ -37,20 +38,23 @@ async function seed(){
       { id: 8, descricao: "Separação e entrega" },
       { id: 9, descricao: "Montagem" },
       { id: 10, descricao: "Assistência" }
-    ]
+    ],
+    skipDuplicates: true
   });
 
   await prisma.tipoEnergia.createMany({
     data: [
       { id: 1, descricao: "Monofásico" },
       { id: 2, descricao: "Trifásico"}
-    ]
+    ],
+    skipDuplicates: true
   })
 
   await prisma.etapaUsuario.createMany({
     data: [
       {etapaId: 1, usuarioId: 1}
-    ]
+    ],
+    skipDuplicates: true
   })
 }
 

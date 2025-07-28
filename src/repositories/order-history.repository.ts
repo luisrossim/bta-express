@@ -1,6 +1,7 @@
 import { prisma } from "@/config/database.js";
 import { UserHistoryAssignmentDTO } from "@/models/dtos/assign-user-to-history.dto.js";
-import { HistoryWithIncludes } from "@/models/order-history.js";
+import { OrderHistoryWithIncludes } from "@/models/order-history.js";
+import { UserWithIncludes } from "@/models/user.js";
 
 export class OrderHistoryRepository {
   private readonly repo = prisma.historicoOS;
@@ -16,7 +17,7 @@ export class OrderHistoryRepository {
   }
   
 
-  async completeStage(historicoId: string) {
+  async completeStage(historicoId: string, user: UserWithIncludes) {
     const now = new Date();
 
     return await this.repo.update({
@@ -24,7 +25,8 @@ export class OrderHistoryRepository {
         id: historicoId 
       },
       data: {
-        concluidoEm: now
+        concluidoEm: now,
+        concluidoPorId: user.id
       }
     })
   }
@@ -82,13 +84,26 @@ export class OrderHistoryRepository {
   }
 
 
-  async findById(historicoId: string): Promise<HistoryWithIncludes | null> {
+  async comments(id: string, observacoes: string) {
+    return await this.repo.update({
+      where: { id },
+      data: { observacoes }
+    })
+  }
+
+
+  async findById(historicoId: string): Promise<OrderHistoryWithIncludes | null> {
     return await this.repo.findUnique({
       where: { 
         id: historicoId
       },
       include: {
-        etapa: true
+        etapa: true,
+        atribuicoes: {
+          include: {
+            usuario: true
+          }
+        }
       }
     })
   }

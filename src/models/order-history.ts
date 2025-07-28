@@ -1,12 +1,14 @@
 import { HistoricoOS, Prisma } from "@prisma/client";
+import { Stage } from "./stage.js";
 
-export type ServiceOrderHistory = HistoricoOS;
-export type CreateServiceOrderHistory = Prisma.HistoricoOSCreateInput;
+export type OrderHistory = HistoricoOS;
+export type CreateOrderHistory = Prisma.HistoricoOSCreateInput;
 
-const HistoryIncludeParams = {
-  etapa: true
-};
+export type AtribuicaoComUsuario = Prisma.AtribuicaoGetPayload<{
+  include: { usuario: true }
+}>
 
-export type HistoryWithIncludes = Prisma.HistoricoOSGetPayload<{
-  include: typeof HistoryIncludeParams;
-}>;
+export interface OrderHistoryWithIncludes extends OrderHistory {
+  etapa?: Stage
+  atribuicoes?: AtribuicaoComUsuario[]
+}

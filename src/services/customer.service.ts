@@ -13,8 +13,13 @@ export class CustomerService {
   }
 
 
-  async update(customerId: number, data: Partial<CustomerDTO>) {
-    await this.findById(customerId);
+  async update(customerId: number, data: CustomerDTO) {
+    const customer = await this.findById(customerId);
+
+    if(customer.cpf != data.cpf) {
+      await this.ensureCustomerCpfIsUnique(data.cpf);
+    }
+
     return await this.customerRepository.update(customerId, data);
   }
 
