@@ -1,6 +1,7 @@
 import { prisma } from "@/config/database.js";
 import { OrderFilters } from "@/models/dtos/order-filters.js";
 import { Assistance, CreateServiceOrderDTO, Measurement } from "@/models/dtos/order.dto.js";
+import { AtribuicaoComUsuario } from "@/models/order-history.js";
 import { ServiceOrder, ServiceOrderWithIncludes } from "@/models/order.js";
 
 export class OrderRepository {
@@ -176,5 +177,26 @@ export class OrderRepository {
         clienteId: true
       }
     })
+  }
+
+
+  async findLatestHistoryUsersByOrderId(orderId: string): Promise<AtribuicaoComUsuario[]> {
+    const historico = await prisma.historicoOS.findFirst({
+      where: {
+        ordemServicoId: orderId
+      },
+      orderBy: {
+        criadoEm: 'desc'
+      },
+      include: {
+        atribuicoes: {
+          include: {
+            usuario: true
+          }
+        }
+      }
+    });
+
+    return historico?.atribuicoes ?? [];
   }
 }

@@ -102,7 +102,7 @@ export class OrderHistoryService {
     const isAdmin = userRequest.role.descricao === 'Admin';
 
     if (!isAssigned && !isAdmin) {
-      throw new InvalidArgumentsException('Somente técnicos atribuídos ou administradores podem realizar essa ação.');
+      throw new InvalidArgumentsException('Somente atribuídos ou administradores podem realizar essa ação.');
     }
   }
 }

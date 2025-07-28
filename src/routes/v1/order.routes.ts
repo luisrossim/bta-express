@@ -3,7 +3,7 @@ import multer from 'multer';
 import { validate } from "@/middlewares/validate-dto.middleware.js";
 import { assistanceSchema, createOrderSchema, measurementSchema } from "@/models/dtos/order.dto.js";
 import { asyncHandler } from "@/utils/async-handler.js";
-import { requestLimiter } from "@/middlewares/rate-limit.middleware.js";
+import { restrictRateLimiter } from "@/middlewares/rate-limit.middleware.js";
 import { JWTAuth } from "@/middlewares/jwt.middleware.js";
 import { createOrderController } from "@/factories/order-factory.js";
 
@@ -54,9 +54,9 @@ router.patch(
 
 router.post(
   '/:id/attachment',
-  requestLimiter,
+  restrictRateLimiter,
   JWTAuth,
-  upload.single('image'),
+  upload.single('file'),
   asyncHandler((req, res, next) => orderController.attachFile(req, res))
 )
 

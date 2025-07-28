@@ -1,6 +1,6 @@
 import { createAuthController } from "@/factories/auth-factory.js";
 import { JWTAuth } from "@/middlewares/jwt.middleware.js";
-import { requestLimiter } from "@/middlewares/rate-limit.middleware.js";
+import { restrictRateLimiter } from "@/middlewares/rate-limit.middleware.js";
 import { validate } from "@/middlewares/validate-dto.middleware.js";
 import { authRequestSchema } from "@/models/dtos/auth.dto.js";
 import { asyncHandler } from "@/utils/async-handler.js";
@@ -11,25 +11,25 @@ const authController = createAuthController();
 
 router.post(
   '/login',
-  requestLimiter,
+  restrictRateLimiter,
   validate(authRequestSchema),
   asyncHandler((req, res, next) => authController.login(req, res))
 );
 
 router.get(
   '/recover',
-  requestLimiter,
+  restrictRateLimiter,
   asyncHandler((req, res, next) => authController.refreshAccess(req, res))
 )
 
 router.post(
   '/logout',
-  requestLimiter,
+  restrictRateLimiter,
   asyncHandler((req, res, next) => authController.logoutAndClearCookies(req, res))
 )
 
 router.get(
-  '/verify',
+  '/me',
   JWTAuth,
   asyncHandler((req, res, next) => authController.checkAccess(req, res))
 )

@@ -8,11 +8,16 @@ import { AttachmentWithSignedUrl, CreateAttach } from "@/models/attachment.js";
 import { AttachmentRepository } from "@/repositories/attachment.repository.js";
 import { OrderRepository } from "@/repositories/order.repository.js";
 import { OrderFilters } from "@/models/dtos/order-filters.js";
+import { JwtPayload } from "jsonwebtoken";
+import { UserWithIncludes } from "@/models/user.js";
+import { AtribuicaoComUsuario } from "@/models/order-history.js";
+import { UserService } from "./user.service.js";
 
 export class OrderService {
   constructor(
     private orderRepository: OrderRepository,
-    private attachmentRepository: AttachmentRepository
+    private attachmentRepository: AttachmentRepository,
+    private userService: UserService
   ){}
 
 
@@ -49,7 +54,12 @@ export class OrderService {
   }
 
 
-  async attachFile(id: string, file: any){
+  async attachFile(orderId: string, file: any, requestUser: JwtPayload){
+    const atribuicoes = await this.orderRepository.findLatestHistoryUsersByOrderId(orderId);
+    const user = await this.userService.findByEmail(requestUser.login);
+
+    this.throwIfAssignmentIsInvalid(atribuicoes , user);
+
     if (!this.fileTypeIsValid(file)){
       throw new InvalidArgumentsException("Apenas arquivos .jpg, .png ou .pdf são permitidos.");
     }
@@ -76,7 +86,7 @@ export class OrderService {
     }
 
     const attach: CreateAttach = {
-      ordemServicoId: id,
+      ordemServicoId: orderId,
       url: randomImageKey,
       tipo: file.mimetype,
       descricao: file.originalname,
@@ -104,6 +114,19 @@ export class OrderService {
     return {
       ...attachment,
       url_temporaria: signedUrl
+    }
+  }
+
+
+  throwIfAssignmentIsInvalid(atribuicoes: AtribuicaoComUsuario[], userRequest: UserWithIncludes) {
+    const isAssigned = atribuicoes.some(
+      attr => attr.usuario?.id === userRequest.id
+    );
+
+    const isAdmin = userRequest.role.descricao === 'Admin';
+
+    if (!isAssigned && !isAdmin) {
+      throw new InvalidArgumentsException('Somente atribuídos ou administradores podem realizar essa ação.');
     }
   }
 

@@ -3,6 +3,7 @@ import { CreateServiceOrderDTO } from "@/models/dtos/order.dto.js";
 import { ServiceOrderWithIncludes } from "@/models/order.js";
 import { OrderService } from "@/services/order.service.js";
 import { OrderFilters, orderFiltersSchema } from "@/models/dtos/order-filters.js";
+import { JwtPayload } from "jsonwebtoken";
 
 export class OrderController {
   constructor(private orderService: OrderService){}
@@ -18,8 +19,9 @@ export class OrderController {
   async attachFile(req: Request, res: Response) {
     const { id } = req.params;
     const file = req.file;
+    const requestUser: JwtPayload = (req as any).user;
 
-    await this.orderService.attachFile(id, file);
+    await this.orderService.attachFile(id, file, requestUser);
     return res.status(200).send();
   }
 

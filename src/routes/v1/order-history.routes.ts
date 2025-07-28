@@ -8,7 +8,7 @@ import { commentsHistorySchema } from "@/models/dtos/comments-history.dto.js";
 import { authorizeRoles } from "@/middlewares/authorize-roles.middleware.js";
 
 const router = Router();
-const orderHistoryController = createOrderHistoryController()
+const orderHistoryController = createOrderHistoryController();
 
 
 router.post(
@@ -35,6 +35,7 @@ router.post(
 router.post(
   '/:historyId/advance',
   JWTAuth,
+  authorizeRoles(['Admin']),
   asyncHandler((req, res, next) => orderHistoryController.advanceStage(req, res))
 )
 

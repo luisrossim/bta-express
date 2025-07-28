@@ -5,14 +5,17 @@ import logger from '@/config/logger.js';
 import cookieParser from 'cookie-parser';
 import routes from './routes/routes.js';
 import { errorHandler } from '@/middlewares/error-handler.middleware.js';
+import { generalRateLimiter } from './middlewares/rate-limit.middleware.js';
 
 const app = express();
 const PORT = 3000;
 
 app.set('trust proxy', 1);
 
+app.use(generalRateLimiter);
+
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: process.env.CORS_ORIGIN,
   credentials: true
 }));
 
