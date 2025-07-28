@@ -44,8 +44,19 @@ export class UserService {
 
     return user;
   }
+  
 
+  async findByEmail(email: string){
+    const user = await this.userRepository.findByEmail(email);
 
+    if(!user){
+      throw new NotFoundException('Usuário não encontrado.')
+    }
+
+    return user;
+  }
+
+  
   async throwIfEmailAlreadyExists(email: string){
     const user = await this.userRepository.findByEmail(email);
 
