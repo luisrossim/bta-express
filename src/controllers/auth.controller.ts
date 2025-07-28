@@ -13,8 +13,8 @@ export class AuthController {
     this.authService = authService;
     this.jwtCookieOptions = {
       httpOnly: true,
-      secure: false,
-      sameSite: 'strict' as const,
+      secure: true,
+      sameSite: 'none' as const,
       path: '/'
     }
   }
