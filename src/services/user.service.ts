@@ -3,7 +3,6 @@ import { CreateUserDTO, UserDTO } from "@/models/dtos/user.dto.js";
 import { UserRepository } from "@/repositories/user.repository.js";
 import { hashPassword } from "./security/bcrypt.service.js";
 import { EntityAlreadyExistsException } from "@/exceptions/entity-already-exists.js";
-import { UserWithIncludes } from "@/models/user.js";
 
 
 export class UserService {
@@ -11,12 +10,7 @@ export class UserService {
 
 
   async create(dto: CreateUserDTO) {
-    const user = await this.findByEmail(dto.email);
-
-    if(user){
-      throw new EntityAlreadyExistsException("E-mail já cadastrado")
-    }
-
+    await this.throwIfEmailAlreadyExists(dto.email);
     const hashedPassword = await hashPassword(dto.password);
     const userToCreate = { ...dto, password: hashedPassword }
 
@@ -52,11 +46,11 @@ export class UserService {
   }
 
 
-  async findByEmail(email: string){
+  async throwIfEmailAlreadyExists(email: string){
     const user = await this.userRepository.findByEmail(email);
 
-    if(!user){
-      throw new NotFoundException('Usuário não encontrado.')
+    if(user){
+      throw new EntityAlreadyExistsException('O email informado já está em uso.')
     }
 
     return user;
