@@ -14,7 +14,7 @@ const handler = (req: Request, res: Response) => {
 
 export const generalRateLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
-  max: 100,
+  max: 120,
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator,

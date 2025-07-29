@@ -6,10 +6,10 @@ export const createOrderSchema = z.object({
 })
 
 export const measurementSchema = z.object({
-  hasAutomacao: z.boolean(),
-  hasOrcamentoBanco: z.boolean(),
-  hasProjetoPlantio: z.boolean(),
-  quantidadeSetores: z.number()
+  hasAutomacao: z.boolean().optional().nullable(),
+  hasOrcamentoBanco: z.boolean().optional().nullable(),
+  hasProjetoPlantio: z.boolean().optional().nullable(),
+  quantidadeSetores: z.number().optional().nullable(),
 })
 
 export const assistanceSchema = z.object({
