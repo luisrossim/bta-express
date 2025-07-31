@@ -18,7 +18,8 @@ export class UserService {
   }
   
 
-  async update(userId: number, data: Partial<UserDTO>) {
+  async update(userId: number, data: UserDTO) {
+    await this.throwIfEmailAlreadyExists(data.email);
     await this.findById(userId);
     return await this.userRepository.update(userId, data);
   }
